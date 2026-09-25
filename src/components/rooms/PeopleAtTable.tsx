@@ -17,7 +17,7 @@ export function PeopleAtTable({ cards }: { cards: PlaceCardView[] }) {
 
   return (
     <>
-      <ul className="grid grid-cols-2 gap-x-6 gap-y-12 sm:grid-cols-3 sm:gap-x-10 lg:grid-cols-4">
+      <ul className="grid grid-cols-2 gap-x-6 gap-y-14 sm:grid-cols-3 sm:gap-x-12 lg:grid-cols-4 lg:px-10">
         {cards.map((c, i) => (
           <motion.li
             key={c.person_id}
@@ -25,7 +25,13 @@ export function PeopleAtTable({ cards }: { cards: PlaceCardView[] }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 + i * 0.09, duration: 1, ease: [0.22, 0.61, 0.24, 1] }}
           >
-            <button type="button" onClick={() => setOpenId(c.person_id)} className="lit group relative mx-auto block w-full max-w-[8.5rem] sm:max-w-[9.5rem]" aria-label={`${c.first_name}${c.role !== "guest" ? `, ${c.role}` : ""}`}>
+            <button
+              type="button"
+              onClick={() => setOpenId(c.person_id)}
+              className="group relative mx-auto block w-full max-w-[7.5rem] sm:max-w-[8.5rem]"
+              style={{ transform: `rotate(${[-3, 2, -1.5, 3.5, -2.5, 1, 2.5, -3.5][i % 8]}deg) translateY(${[0, 14, -6, 8, 18, -4, 6, 12][i % 8]}px)` }}
+              aria-label={`${c.first_name}${c.role !== "guest" ? `, ${c.role}` : ""}`}
+            >
               <Card card={c} />
             </button>
           </motion.li>
@@ -44,7 +50,10 @@ function Card({ card, large = false }: { card: PlaceCardView; large?: boolean })
           {renderMotif(card.motif)}
         </svg>
       </div>
-      <div className={`flex aspect-[5/7] items-center justify-center bg-[#f8f7f3] text-[#1c1a17] shadow-[0_14px_24px_-12px_rgba(0,0,0,0.55)] ${large ? "w-48" : "w-full"}`}>
+      <div
+        className={`tex-paper flex aspect-[5/7] items-center justify-center text-[#231d17] shadow-[0_2px_2px_rgba(0,0,0,0.35),0_18px_26px_-12px_rgba(0,0,0,0.65)] ${large ? "w-48" : "w-full"}`}
+        style={{ backgroundColor: "#efe8da", filter: large ? undefined : "sepia(0.12) brightness(0.93)" }}
+      >
         <span className={`caps ${large ? "text-[0.95rem]" : "text-[0.74rem]"} tracking-[0.34em]`}>{card.first_name}</span>
       </div>
     </div>
@@ -73,14 +82,14 @@ function PersonSheet({ card, onClose }: { card: PlaceCardView; onClose: () => vo
         exit={{ y: 40, opacity: 0 }}
         transition={{ duration: 0.8, ease: [0.22, 0.61, 0.24, 1] }}
       >
-        <button type="button" onClick={onClose} className="caps absolute right-6 top-6 opacity-60 hover:opacity-100">
+        <button type="button" onClick={onClose} className="label absolute right-6 top-6 opacity-60 hover:opacity-100">
           Close
         </button>
         <div className="flex justify-center pt-4">
           <Card card={card} large />
         </div>
         <div className="mt-10 text-center">
-          <p className="caps text-[#a8998a]">
+          <p className="label text-[#a8998a]">
             {card.chapter.label}
             {card.role !== "guest" ? ` · ${card.role}` : ""}
           </p>
@@ -98,7 +107,7 @@ function PersonSheet({ card, onClose }: { card: PlaceCardView; onClose: () => vo
             <>
               <p className="text-xl italic">You’d like to find {card.first_name} again.</p>
               <p className="mx-auto mt-3 max-w-xs text-base text-[#a8998a]">If {card.first_name} would like the same, their details will be here. If not, nobody will know you asked.</p>
-              <button disabled={pending} onClick={() => start(() => setConsent(card.person_id, false))} className="caps mt-7 text-[0.62rem] opacity-50 hover:opacity-90">
+              <button disabled={pending} onClick={() => start(() => setConsent(card.person_id, false))} className="label mt-7 opacity-50 hover:opacity-90">
                 Take it back
               </button>
             </>
@@ -109,7 +118,7 @@ function PersonSheet({ card, onClose }: { card: PlaceCardView; onClose: () => vo
               <button
                 disabled={pending}
                 onClick={() => start(() => setConsent(card.person_id, true))}
-                className="caps mt-7 border-b border-[#efe6d8]/40 pb-1 transition-colors hover:border-[#efe6d8] disabled:opacity-40"
+                className="label mt-7 border-b border-[#efe6d8]/40 pb-1 transition-colors hover:border-[#efe6d8] disabled:opacity-40"
               >
                 {pending ? "…" : "Yes, I’d like that"}
               </button>

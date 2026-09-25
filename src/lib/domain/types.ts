@@ -132,6 +132,14 @@ export interface Placement {
   /** vertical offset in rem, for a hand-placed feel */
   lift?: number;
   size?: "sm" | "md" | "lg";
+  /** Where it lies in a room drawn as a scene: centre x / y and width, in % of the scene. */
+  x?: number;
+  y?: number;
+  w?: number;
+  /** The same, on a narrow (portrait) screen. */
+  mx?: number;
+  my?: number;
+  mw?: number;
 }
 
 export interface MemoryObject {

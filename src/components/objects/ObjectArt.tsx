@@ -260,33 +260,34 @@ function Cassette({ label }: { label?: string | null }) {
 }
 
 function Shoes() {
-  const shoe = (
-    <g fill="none" stroke="currentColor" strokeWidth="1.15" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M14 80 C12 72 18 68 30 67 L118 61 C138 59 160 49 178 52 C194 55 200 68 194 76 C189 84 172 86 150 86 L32 88 C20 88 15 85 14 80 Z" />
-      <path d="M16 76 C60 76 120 74 196 70" opacity=".55" />
-      <path d="M30 67 C31 50 42 36 60 30 L78 26 C86 36 98 42 112 42 L128 40 C146 42 164 47 178 52" />
-      <path d="M60 30 C66 42 70 54 70 64" opacity=".7" />
-      <path d="M78 26 C80 22 86 20 92 22" />
+  const shoe = (tone: string, sole: string) => (
+    <g strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 80 C12 72 18 68 30 67 L118 61 C138 59 160 49 178 52 C194 55 200 68 194 76 C189 84 172 86 150 86 L32 88 C20 88 15 85 14 80 Z" fill={sole} stroke="#5b4a3c" strokeWidth="1" />
+      <path d="M30 67 C31 50 42 36 60 30 L78 26 C86 36 98 42 112 42 L128 40 C146 42 164 47 178 52 C160 49 138 59 118 61 Z" fill={tone} stroke="#5b4a3c" strokeWidth="1" />
+      <path d="M16 76 C60 76 120 74 196 70" stroke="#8a7a68" strokeWidth=".8" fill="none" />
+      <path d="M60 30 C66 42 70 54 70 64" stroke="#8a7a68" strokeWidth=".8" fill="none" />
+      <path d="M78 26 C80 22 86 20 92 22" stroke="#5b4a3c" strokeWidth="1" fill="none" />
       {[0, 1, 2, 3, 4].map((i) => (
-        <path key={i} d={`M${84 + i * 8} ${33 + i * 2} l7 -6`} />
+        <path key={i} d={`M${84 + i * 8} ${33 + i * 2} l7 -6`} stroke="#6b5a4a" strokeWidth="1.4" />
       ))}
-      <path d="M40 60 C60 56 90 58 118 54" opacity=".4" strokeDasharray="2 3" />
-      <path d="M26 80 h4 M44 80 h4 M62 80 h4 M80 79 h4 M98 79 h4 M116 78 h4 M134 77 h4 M152 76 h4" opacity=".6" />
+      <path d="M40 60 C60 56 90 58 118 54" stroke="#a89a88" strokeWidth=".8" strokeDasharray="2 3" fill="none" />
+      <path d="M26 80 h4 M44 80 h4 M62 80 h4 M80 79 h4 M98 79 h4 M116 78 h4 M134 77 h4 M152 76 h4" stroke="#8a7a68" strokeWidth="1" />
     </g>
   );
   return (
     <svg viewBox="0 0 220 110" className="h-full w-full overflow-visible" aria-hidden>
-      <g transform="translate(18 -14)" opacity=".38">
-        {shoe}
-      </g>
-      {shoe}
-      {/* red dust in the laces */}
+      <g transform="translate(18 -14)">{shoe("#d9d1c4", "#c9bfae")}</g>
+      {shoe("#efe9df", "#dcd3c4")}
+      {/* red dust from the road, in the laces and along the sole */}
       {[
         [92, 30],
         [104, 34],
         [98, 38],
+        [40, 84],
+        [70, 85],
+        [150, 82],
       ].map(([x, y], i) => (
-        <circle key={i} cx={x} cy={y} r=".9" fill="#a0543a" />
+        <circle key={i} cx={x} cy={y} r={i > 2 ? 1.6 : 0.9} fill="#a0543a" opacity=".7" />
       ))}
     </svg>
   );

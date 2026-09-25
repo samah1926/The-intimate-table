@@ -225,27 +225,29 @@ export const rooms: Room[] = [
   { key: "door", name: "The Unmarked Door", epigraph: null, base_state: "absent", sort: 5 },
 ];
 
-const photo = (id: string, scene: string, caption: string, alt: string): MediaAsset => ({
+const photo = (id: string, file: string, scene: string, caption: string, alt: string): MediaAsset => ({
   id,
   kind: "image",
-  url: null,
+  url: `/house/photos/${file}.webp`,
   storage_path: null,
   alt,
   caption,
-  credit: null,
+  credit: "Placeholder — to be replaced by Chapter 0 photography",
   scene,
   chapter_id: CH0,
   owner_user_id: null,
 });
 
 export const media: MediaAsset[] = [
-  photo("m-table", "table", "Just before anyone sat down.", "A long table from above, set with plates and candles"),
-  photo("m-candle", "candle", "Around eleven.", "Candlelight, out of focus"),
-  photo("m-hands", "hands", "Bread, being passed the wrong way.", "Hands passing bread across a table"),
-  photo("m-road", "road", "6:12. The road still blue.", "An empty road at first light"),
-  photo("m-dawn", "dawn", "Kilometre four. Nobody talking.", "Low sun over a flat horizon"),
-  photo("m-window", "window", "The morning after.", "Light through a window onto linen"),
-  photo("m-linen", "linen", "", "Folded linen on a wooden floor"),
+  photo("m-table", "table-night", "table", "The table, a little after eleven.", "A long table from above after dinner: plates, glasses, candles burning down"),
+  photo("m-candle", "candles", "candle", "Around eleven.", "Candlelight, out of focus"),
+  photo("m-hands", "glasses", "hands", "The last glasses, around one.", "Wine glasses in candlelight, one still half full"),
+  photo("m-road", "road-dawn", "road", "6:12. The road still blue.", "An empty road at first light, three runners far away"),
+  photo("m-dawn", "sea-dawn", "dawn", "Kilometre four. Nobody talking.", "The sea at sunrise"),
+  photo("m-window", "window-linen", "window", "The morning after.", "Morning light through a window onto crumpled linen"),
+  photo("m-linen", "linen-burgundy", "linen", "Someone’s napkin, left on the tiles.", "A burgundy linen napkin on green zellige, palm shadows"),
+  photo("m-tea", "tea", "linen", "Mint tea, before anyone went to bed.", "A brass tray from above with a teapot and two glasses of mint tea"),
+  photo("m-arch", "arch", "window", "The courtyard, from the door.", "A plaster arch opening onto a garden, palm shadows on the wall"),
 ];
 
 const obj = (o: Partial<MemoryObject> & Pick<MemoryObject, "id" | "slug" | "kind" | "title" | "room_key">): MemoryObject => ({
@@ -271,7 +273,7 @@ export const objects: MemoryObject[] = [
     title: "The invitation",
     caption: "Cream card, black thread. It arrived before you were ready.",
     room_key: "memory",
-    placement: { rotate: -4, size: "md" },
+    placement: { rotate: -7, x: 15, y: 50, w: 17, mx: 30, my: 23, mw: 42 },
     sort: 1,
   }),
   obj({
@@ -281,7 +283,7 @@ export const objects: MemoryObject[] = [
     title: "A photograph",
     caption: "Nobody was looking at the camera.",
     room_key: "memory",
-    placement: { rotate: 3, lift: 1.5, size: "lg" },
+    placement: { rotate: 5, x: 34, y: 49, w: 12.5, mx: 74, my: 24, mw: 32 },
     sort: 2,
   }),
   obj({
@@ -292,7 +294,7 @@ export const objects: MemoryObject[] = [
     caption: "It was under your glass. You found it when the card asked you to look.",
     room_key: "memory",
     base_state: "absent",
-    placement: { rotate: -2, lift: -0.5, size: "sm" },
+    placement: { rotate: -4, x: 50, y: 44, w: 10, mx: 27, my: 40, mw: 30 },
     sort: 3,
   }),
   obj({
@@ -305,7 +307,7 @@ export const objects: MemoryObject[] = [
     room_key: "memory",
     base_state: "sealed",
     sealed_hint: "Still in its sleeve. It plays after Motion.",
-    placement: { rotate: 6, lift: 1, size: "md" },
+    placement: { rotate: -3, x: 83, y: 49, w: 18, mx: 34, my: 59, mw: 46 },
     sort: 4,
   }),
   obj({
@@ -315,7 +317,7 @@ export const objects: MemoryObject[] = [
     title: "A small flower",
     caption: "From the middle of the table. Pressed the next morning.",
     room_key: "memory",
-    placement: { rotate: -8, lift: 2, size: "sm" },
+    placement: { rotate: 62, x: 24, y: 79, w: 7, mx: 80, my: 70, mw: 15 },
     sort: 5,
   }),
   obj({
@@ -328,7 +330,7 @@ export const objects: MemoryObject[] = [
     room_key: "memory",
     base_state: "sealed",
     sealed_hint: "Not before March.",
-    placement: { rotate: 2, lift: -1, size: "md" },
+    placement: { rotate: -2, x: 45, y: 76, w: 15, mx: 32, my: 79, mw: 40 },
     sort: 6,
   }),
   obj({
@@ -339,7 +341,7 @@ export const objects: MemoryObject[] = [
     caption: "It wasn’t on the table. It was in your coat pocket when you got home.",
     room_key: "memory",
     base_state: "absent",
-    placement: { rotate: -12, lift: 0.5, size: "md" },
+    placement: { rotate: -16, x: 63, y: 84, w: 11, mx: 74, my: 86, mw: 34 },
     sort: 7,
   }),
   obj({
@@ -351,7 +353,7 @@ export const objects: MemoryObject[] = [
     caption: "It arrived on its own, half a year later.",
     room_key: "memory",
     base_state: "absent",
-    placement: { rotate: 4, size: "md" },
+    placement: { rotate: 6, x: 82, y: 80, w: 13, mx: 30, my: 94, mw: 32 },
     sort: 8,
   }),
 
@@ -361,10 +363,10 @@ export const objects: MemoryObject[] = [
     slug: "the-menu",
     kind: "menu",
     label: "THIRTY",
-    title: "The menu",
-    caption: "Five courses. The fourth one was improvised.",
-    room_key: "table",
-    placement: { rotate: -1.5, size: "lg" },
+    title: "A folded menu",
+    caption: "Five courses. The fourth one was improvised. Someone folded it and put it in a coat pocket.",
+    room_key: "memory",
+    placement: { rotate: 7, x: 65, y: 54, w: 11, mx: 72, my: 45, mw: 28 },
     sort: 1,
   }),
   obj({
@@ -438,6 +440,7 @@ export const memories: Memory[] = [
           "You are invited to the first table.\n\nThere is nothing to prepare. Come a little before you feel ready — that is the only condition. We will begin when everyone has sat down and nobody is quite sure what happens next.",
       },
       { type: "quote", text: "Participation over preparation.", attribution: "printed on the back, very small" },
+      { type: "photos", media_ids: ["m-arch"] },
     ],
   },
   {
@@ -447,7 +450,7 @@ export const memories: Memory[] = [
     occurred_at: "2026-09-12T18:10:00Z",
     location_label: "A house with a long table",
     blocks: [
-      { type: "photos", media_ids: ["m-table", "m-candle", "m-hands"] },
+      { type: "photos", media_ids: ["m-table", "m-candle", "m-hands", "m-linen"] },
       {
         type: "note",
         text:
@@ -497,6 +500,7 @@ export const memories: Memory[] = [
     occurred_at: "2026-09-13T08:30:00Z",
     location_label: null,
     blocks: [
+      { type: "photos", media_ids: ["m-window"] },
       {
         type: "note",
         text:
@@ -540,7 +544,7 @@ export const memories: Memory[] = [
     occurred_at: null,
     location_label: null,
     blocks: [
-      { type: "photos", media_ids: ["m-window"] },
+      { type: "photos", media_ids: ["m-arch"] },
       {
         type: "note",
         text:
@@ -662,7 +666,7 @@ export const memories: Memory[] = [
         type: "learned",
         text: "Range of motion you don’t use, you lose. Twenty minutes, most mornings, is a better deal than an hour once a week.",
       },
-      { type: "photos", media_ids: ["m-linen"] },
+      { type: "photos", media_ids: ["m-arch"] },
     ],
   },
   {
@@ -676,6 +680,7 @@ export const memories: Memory[] = [
         type: "note",
         text: "Feet in warm salted water. Mint tea. Twelve minutes where nobody was allowed to be useful.",
       },
+      { type: "photos", media_ids: ["m-tea"] },
       {
         type: "learned",
         text: "Adaptation happens during rest, not during effort. The run asks the question; the recovery answers it.",

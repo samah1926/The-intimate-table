@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Doorway } from "@/components/house/Doorways";
 import { Letter } from "@/components/paper/Letter";
 import { ChapterEnvelope } from "@/components/rooms/ChapterEnvelope";
+import { Console } from "@/components/rooms/Console";
+import { Photo } from "@/components/photo/Photo";
 import type { HouseView, LetterView } from "@/lib/house/compose";
 import { ROOM_PATH, houseDate, timeOfDay } from "@/lib/house/light";
 import { getHouse } from "@/lib/house/session";
@@ -33,13 +35,15 @@ export default async function Hall() {
   const clues = view.hall.clues.filter((c) => c.kind !== "seasonal");
   const invitations = view.hall.moments.filter((m) => m.phase === "prelude");
   const door = view.rooms.find((r) => r.key === "door" && r.state === "open");
+  // A Polaroid from the last Chapter, tucked into the corner of the letter.
+  const tucked = view.objects.find((o) => o.kind === "photograph" && o.state === "open")?.memory?.blocks.flatMap((b) => (b.type === "photos" ? b.photos : []))[0] ?? null;
   const doors = view.rooms.filter((r) => r.state === "open" && r.key !== "hall" && r.key !== "door");
 
   return (
     <div className="pb-24">
       <header className="mx-auto max-w-6xl px-5 pt-28 sm:px-10 sm:pt-36">
-        <p className="type text-[0.78rem] muted">
-          {houseDate(now)} · {timeOfDay(now)}
+        <p className="label muted">
+          {houseDate(now)}, {timeOfDay(now)}
         </p>
         <h1 className="mt-6 max-w-2xl text-[2.3rem] font-light italic leading-[1.08] sm:text-[3.4rem]">{hall.epigraph}</h1>
         {seasonal.map((s) => (
@@ -51,21 +55,34 @@ export default async function Hall() {
 
       {/* The letter, and the console by the door */}
       <section className="mx-auto mt-16 grid max-w-6xl gap-16 px-5 sm:mt-20 sm:px-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-20">
-        <div>
+        <div className="relative">
           {letter && <Letter letter={letter} />}
+          {tucked && (
+            <Link
+              href="/house/memory?open=a-photograph"
+              aria-label="A photograph, tucked into the corner of the letter"
+              className="on-surface absolute -right-2 -top-8 w-28 rotate-[8deg] transition-transform duration-700 hover:rotate-[4deg] sm:-right-10 sm:w-36"
+            >
+              <Photo form="polaroid" media={tucked} note="the table" />
+            </Link>
+          )}
           {olderLetters.length > 0 && <Drawer letters={olderLetters} />}
         </div>
 
-        <aside aria-label="On the console" className="space-y-16 lg:pt-10">
-          {invitations.map((m) => (
-            <div key={m.chapter.id}>
-              <p className="caps mb-6 muted">Left for you</p>
-              <ChapterEnvelope moment={m} firstName={view.viewer.first_name} />
+        <aside aria-label="On the console" className="lg:pt-10">
+          <Console>
+            <div className="space-y-16">
+              {invitations.map((m) => (
+                <div key={m.chapter.id}>
+                  <p className="label mb-6 muted">Left for you</p>
+                  <ChapterEnvelope moment={m} firstName={view.viewer.first_name} />
+                </div>
+              ))}
+              {clues.map((c) => (
+                <Clue key={c.id} clue={c} />
+              ))}
             </div>
-          ))}
-          {clues.map((c) => (
-            <Clue key={c.id} clue={c} />
-          ))}
+          </Console>
         </aside>
       </section>
 
@@ -73,8 +90,8 @@ export default async function Hall() {
 
       {/* Doors */}
       <section aria-label="Rooms" className="mx-auto mt-28 max-w-6xl px-5 sm:px-10">
-        <div className="rule border-t" />
-        <ul className="mt-14 grid grid-cols-2 gap-y-14 sm:flex sm:flex-wrap sm:items-end sm:gap-x-16">
+        <p className="label muted">Doors</p>
+        <ul className="mt-10 grid grid-cols-2 gap-y-14 sm:flex sm:flex-wrap sm:items-end sm:gap-x-16">
           {doors.map((r) => (
             <li key={r.key} className="flex justify-center sm:block">
               <Doorway room={r} size="lg" />
@@ -112,7 +129,7 @@ function Quiet({ title, lines, footnote }: { title: string; lines: string[]; foo
 function Drawer({ letters }: { letters: LetterView[] }) {
   return (
     <details className="group mx-auto mt-10 max-w-[34rem]">
-      <summary className="caps cursor-pointer list-none text-center muted transition-opacity hover:opacity-100 [&::-webkit-details-marker]:hidden">
+      <summary className="label cursor-pointer list-none text-center muted transition-opacity hover:opacity-100 [&::-webkit-details-marker]:hidden">
         <span className="group-open:hidden">
           {letters.length === 1 ? "An older letter" : `${letters.length} older letters`} in the drawer
         </span>
@@ -130,8 +147,8 @@ function Drawer({ letters }: { letters: LetterView[] }) {
 function Clue({ clue }: { clue: LetterView }) {
   return (
     <div>
-      <p className="caps mb-6 muted">{clue.title ?? "Found on the console"}</p>
-      <div className="relative mx-auto w-full max-w-[18rem] rotate-[1.5deg] bg-[#f7f3ec] px-7 py-8 text-ink shadow-[0_12px_30px_-14px_rgba(28,26,23,.45)]">
+      <p className="label mb-6 muted">{clue.title ?? "Found on the console"}</p>
+      <div className="paper relative mx-auto w-full max-w-[18rem] rotate-[1.5deg] px-7 py-8">
         <p className="type text-[1.35rem] tracking-wide">{clue.body}</p>
         {clue.signature && <p className="mt-4 text-[1rem] italic text-ink-soft">{clue.signature}</p>}
       </div>
@@ -145,7 +162,7 @@ function Recent({ view }: { view: HouseView }) {
   for (const r of view.hall.recent) byRoom.set(r.room, [...(byRoom.get(r.room) ?? []), r]);
   return (
     <section aria-label="Since you were last here" className="mx-auto mt-28 max-w-6xl px-5 sm:px-10">
-      <p className="caps muted">Since you were last here</p>
+      <p className="label muted">Since you were last here</p>
       <div className="mt-8 max-w-3xl space-y-5 text-[1.45rem] font-light leading-snug sm:text-[1.7rem]">
         {[...byRoom.entries()].map(([room, items]) => (
           <p key={room}>
@@ -169,14 +186,14 @@ function Contents({ view }: { view: HouseView }) {
   if (!view.hall.contents.length) return null;
   return (
     <section aria-label="Chapters" className="mx-auto mt-28 max-w-6xl px-5 sm:px-10">
-      <p className="caps muted">Contents</p>
+      <p className="label muted">Contents</p>
       <ol className="mt-8 max-w-md">
         {view.hall.contents.map((c) => (
           <li key={c.number} className="rule flex items-baseline gap-6 border-b py-3.5">
             <span className="w-8 text-[1.05rem] tabular-nums muted">{c.number}</span>
             <span className={`flex-1 text-[1.35rem] ${c.title ? "italic" : "muted"}`}>{c.title ?? "—"}</span>
-            {c.lived && <span className="caps text-[0.58rem] muted">lived</span>}
-            {c.current && !c.lived && <span className="caps text-[0.58rem] muted">soon</span>}
+            {c.lived && <span className="label muted">lived</span>}
+            {c.current && !c.lived && <span className="label muted">soon</span>}
           </li>
         ))}
       </ol>

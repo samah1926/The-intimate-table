@@ -69,8 +69,8 @@ export function Plan({ rooms, current, isHost, onClose }: { rooms: RoomView[]; c
     >
       <div className="grain" aria-hidden style={{ opacity: 0.08 }} />
       <div className="flex items-start justify-between px-5 pt-[max(1.25rem,env(safe-area-inset-top))] sm:px-10 sm:pt-8">
-        <p className="caps">The plan</p>
-        <button type="button" onClick={onClose} className="caps opacity-70 transition-opacity hover:opacity-100">
+        <p className="label">The plan</p>
+        <button type="button" onClick={onClose} className="label opacity-70 transition-opacity hover:opacity-100">
           Fold it away
         </button>
       </div>
@@ -163,7 +163,7 @@ export function Plan({ rooms, current, isHost, onClose }: { rooms: RoomView[]; c
 
         <nav aria-label="Rooms" className="mt-10 flex flex-wrap gap-x-6 gap-y-3">
           {visible.map((r) => (
-            <Link key={r.key} href={ROOM_PATH[r.key]} onClick={onClose} className="caps link-quiet" aria-current={r.key === current ? "page" : undefined}>
+            <Link key={r.key} href={ROOM_PATH[r.key]} onClick={onClose} className="label link-quiet" aria-current={r.key === current ? "page" : undefined}>
               {r.key === "door" ? "A door" : r.name.replace(/^The /, "")}
             </Link>
           ))}
@@ -172,10 +172,10 @@ export function Plan({ rooms, current, isHost, onClose }: { rooms: RoomView[]; c
 
       <div className="flex items-end justify-between px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:px-10 sm:pb-8">
         <form action={leave}>
-          <button className="caps opacity-60 transition-opacity hover:opacity-100">Leave the house</button>
+          <button className="label opacity-60 transition-opacity hover:opacity-100">Leave the house</button>
         </form>
         {isHost && (
-          <Link href="/admin" className="caps opacity-60 transition-opacity hover:opacity-100">
+          <Link href="/admin" className="label opacity-60 transition-opacity hover:opacity-100">
             Back office
           </Link>
         )}

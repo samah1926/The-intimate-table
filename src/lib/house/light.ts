@@ -10,21 +10,24 @@ export interface RoomLight {
   grain: number;
 }
 
-/** Each room is defined by its light, not by a colour scheme. */
+/**
+ * Each room is defined by its light, not by a colour scheme.
+ * Darkness is always warm and always has a source: never flat black.
+ */
 export const LIGHT: Record<RoomKey | "threshold", RoomLight> = {
-  // Evening cream: the lamp in the entrance is always on.
-  hall: { bg: "#ebe4d7", ink: "#1c1a17", muted: "#6c655a", rule: "#1c1a1724", glow: "#fff2d6", tone: "light", grain: 0.075 },
-  // Dark oiled wood, candle-warm.
-  table: { bg: "#221913", ink: "#efe6d8", muted: "#a8998a", rule: "#efe6d81f", glow: "#f3c98b", tone: "dark", grain: 0.05 },
-  // Green-black, one reading lamp.
-  library: { bg: "#1a211d", ink: "#e9e3d4", muted: "#9aa194", rule: "#e9e3d41c", glow: "#f1dca8", tone: "dark", grain: 0.05 },
-  // Limestone, early morning.
-  studio: { bg: "#e2e0da", ink: "#21201d", muted: "#6b6961", rule: "#21201d22", glow: "#ffffff", tone: "light", grain: 0.06 },
-  // Almost dark. Only the objects are lit.
-  memory: { bg: "#0f0e0d", ink: "#ebe5d9", muted: "#8f887c", rule: "#ebe5d91a", glow: "#f6e7c8", tone: "dark", grain: 0.045 },
-  // Black, with light under the door.
-  door: { bg: "#080808", ink: "#e8e1d3", muted: "#8a8478", rule: "#e8e1d31a", glow: "#f5e4c0", tone: "dark", grain: 0.04 },
-  threshold: { bg: "#0d0c0b", ink: "#e8e1d3", muted: "#8a8478", rule: "#e8e1d31a", glow: "#f5e1b5", tone: "dark", grain: 0.05 },
+  // Late afternoon: sun through an arched window, palm shadows on plaster.
+  hall: { bg: "#d8c6ad", ink: "#2a2118", muted: "#6f604f", rule: "#2a211826", glow: "#ffe3b3", tone: "light", grain: 0.07 },
+  // Night: candles burning down over an oiled walnut table.
+  table: { bg: "#1f160f", ink: "#f1e6d6", muted: "#b09d88", rule: "#f1e6d61f", glow: "#ffc27a", tone: "dark", grain: 0.06 },
+  // Soft daylight on sage plaster. Quiet.
+  library: { bg: "#c9c9b9", ink: "#23261f", muted: "#5d6255", rule: "#23261f22", glow: "#fbfbef", tone: "light", grain: 0.06 },
+  // Early morning: long beams across limestone.
+  studio: { bg: "#d9d7d0", ink: "#22211e", muted: "#65635b", rule: "#22211e22", glow: "#fffaf0", tone: "light", grain: 0.06 },
+  // One warm lamp over a walnut surface; dust in the light.
+  memory: { bg: "#2a1f18", ink: "#f0e5d4", muted: "#b19d86", rule: "#f0e5d41c", glow: "#ffd9a3", tone: "dark", grain: 0.055 },
+  // Almost dark, but warm: light comes from behind the door.
+  door: { bg: "#120d0a", ink: "#ece2d2", muted: "#9a8b79", rule: "#ece2d21a", glow: "#f5dcae", tone: "dark", grain: 0.05 },
+  threshold: { bg: "#17110d", ink: "#ece2d2", muted: "#9a8b79", rule: "#ece2d21a", glow: "#f5d9a6", tone: "dark", grain: 0.055 },
 };
 
 export function roomFromPath(pathname: string): RoomKey {

@@ -7,6 +7,7 @@ import { markSeen } from "@/app/house/actions";
 import type { KnowledgeView } from "@/lib/house/compose";
 import { useMounted } from "@/lib/use-mounted";
 import { Thread } from "@/components/objects/ObjectArt";
+import { Traces } from "@/components/objects/Traces";
 
 // Books on a shelf, notebooks and cards on the desk.
 // Not a blog: you take something down, read it, and put it back.
@@ -73,20 +74,32 @@ export function Library({ items, initialOpen }: { items: KnowledgeView[]; initia
             </ul>
           </div>
           {/* the shelf itself */}
-          <div aria-hidden className="h-3 bg-[#2c241d] shadow-[0_18px_30px_-10px_rgba(0,0,0,0.7)]" />
+          <div aria-hidden className="tex-wood h-3 shadow-[0_18px_30px_-10px_rgba(40,30,20,0.55)]" style={{ backgroundSize: "600px" }} />
         </section>
       )}
 
       {desk.length > 0 && (
-        <section aria-label="On the desk" className="mx-auto mt-24 max-w-6xl px-5 sm:px-10">
-          <p className="caps muted">On the desk</p>
-          <ul className="mt-10 flex flex-wrap gap-x-12 gap-y-12">
+        <section aria-label="On the desk" className="relative mx-auto mt-24 max-w-6xl sm:px-10">
+          <p className="label muted px-5 sm:px-0">On the desk</p>
+          {/* an oak desk under the window: someone was reading here */}
+          <div className="relative mt-6 overflow-hidden px-6 pb-14 pt-12 sm:px-12">
+            <div aria-hidden className="tex-wood absolute inset-0" style={{ backgroundSize: "700px" }} />
+            <div aria-hidden className="absolute inset-0" style={{ background: "linear-gradient(100deg, rgba(236,214,178,0.62), rgba(196,160,118,0.5) 60%, rgba(150,118,84,0.5))", mixBlendMode: "screen" }} />
+            <div aria-hidden className="absolute inset-0" style={{ background: "radial-gradient(60% 90% at 10% 30%, rgba(255,252,240,0.35), transparent 70%)" }} />
+            <div className="hidden sm:block">
+              <Traces room="library" />
+            </div>
+            <div className="sm:hidden">
+              <Traces room="library" mobile />
+            </div>
+          <ul className="relative flex flex-wrap gap-x-12 gap-y-12">
             {desk.map((k, i) => (
               <motion.li key={k.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 + i * 0.12, duration: 1 }}>
                 <DeskItem item={k} onOpen={() => take(k)} />
               </motion.li>
             ))}
           </ul>
+          </div>
         </section>
       )}
 
@@ -132,7 +145,7 @@ function DeskItem({ item, onOpen }: { item: KnowledgeView; onOpen: () => void })
           <p className="hand mt-24 text-2xl">notes</p>
           {sealed && <Thread tight />}
         </div>
-        <p className="caps mt-5 text-[0.6rem] opacity-70">{item.subject}</p>
+        <p className="label mt-5 text-[#2a2118] opacity-80">{item.subject}</p>
       </button>
     );
   }
@@ -143,7 +156,7 @@ function DeskItem({ item, onOpen }: { item: KnowledgeView; onOpen: () => void })
         <p className="type text-[0.78rem] leading-[1.2rem]">{item.title}</p>
         {sealed && <Thread tight />}
       </div>
-      <p className="caps mt-5 text-[0.6rem] opacity-70">{item.subject}</p>
+      <p className="label mt-5 text-[#2a2118] opacity-80">{item.subject}</p>
     </button>
   );
 }
@@ -183,11 +196,11 @@ function Reading({ item, onClose }: { item: KnowledgeView; onClose: () => void }
       >
         <article className="paper relative mx-auto min-h-full max-w-2xl px-7 pb-24 pt-[max(1.5rem,env(safe-area-inset-top))] sm:min-h-0 sm:px-16 sm:pt-10">
           <div className="flex justify-end">
-            <button type="button" onClick={onClose} className="caps text-ink-soft hover:text-ink">
+            <button type="button" onClick={onClose} className="label text-ink-soft hover:text-ink">
               Put it back
             </button>
           </div>
-          <p className="caps mt-10 text-ink-faint">{item.subject}{item.chapter ? ` · ${item.chapter.label}` : ""}</p>
+          <p className="label mt-10 text-ink-faint">{item.subject}{item.chapter ? ` · ${item.chapter.label}` : ""}</p>
           <h2 className="mt-5 text-[2.4rem] font-light leading-[1.05] sm:text-[3rem]">{item.title}</h2>
           {item.author && <p className="mt-4 text-lg italic text-ink-soft">{item.author}</p>}
           <div className="mt-8 h-px w-16 bg-ink/25" />

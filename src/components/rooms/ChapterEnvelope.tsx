@@ -57,7 +57,7 @@ export function ChapterEnvelope({ moment, firstName }: { moment: ChapterMoment; 
             aria-label={`An envelope: ${moment.chapter.label}. Untie the thread.`}
           >
             <Envelope label={`CHAPTER ${moment.chapter.number}`} to={firstName} untying={untying} />
-            <span className="caps mt-5 block text-center text-[0.62rem] opacity-60 transition-opacity group-hover:opacity-100">
+            <span className="label mt-5 block text-center opacity-60 transition-opacity group-hover:opacity-100">
               {untying ? "…" : "Untie the thread"}
             </span>
           </motion.button>
@@ -195,7 +195,7 @@ function PreludeAnswer({ preludeId, prompt, answered }: { preludeId: string; pro
         placeholder="…"
       />
       <div className="mt-6 text-center">
-        <button disabled={pending} className="caps border-b border-ink/40 pb-1 transition-colors hover:border-ink disabled:opacity-50">
+        <button disabled={pending} className="label border-b border-ink/40 pb-1 transition-colors hover:border-ink disabled:opacity-50">
           {pending ? "Folding it away" : "Leave it with the House"}
         </button>
       </div>

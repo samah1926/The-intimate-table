@@ -5,6 +5,7 @@ import { useActionState, useLayoutEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { enterAsGuest, sendKey, type KeyState } from "@/app/actions";
 import { applyLight } from "@/lib/house/apply-light";
+import { Dust } from "@/components/house/Atmosphere";
 import { LIGHT } from "@/lib/house/light";
 
 // The threshold: a dark doorway with light underneath it. One sentence.
@@ -24,6 +25,12 @@ export function Threshold({ signedInAs, mode, guests, keyExpired }: Props) {
   return (
     <div className="relative flex min-h-dvh flex-col items-center justify-between overflow-hidden px-6 py-[max(2rem,env(safe-area-inset-top))] text-center">
       <div className="grain" aria-hidden />
+      {/* a plaster wall at dusk, and light leaking from under the door */}
+      <div aria-hidden className="tex-plaster pointer-events-none absolute inset-0 opacity-[0.08] mix-blend-overlay" />
+      <div aria-hidden className="flicker pointer-events-none absolute inset-x-0 bottom-0 h-[55%]" style={{ background: "radial-gradient(40% 60% at 50% 45%, rgba(245,210,150,0.14), transparent 70%)" }} />
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <Dust count={16} region={[35, 30, 30, 45]} />
+      </div>
 
       <p className="caps pt-4 opacity-70">The Intimate Table</p>
 
@@ -46,7 +53,7 @@ export function Threshold({ signedInAs, mode, guests, keyExpired }: Props) {
                 {signedInAs ? (
                   <Link href="/house" className="group inline-flex flex-col items-center">
                     <span className="text-[2rem] font-light italic">Come in, {signedInAs}.</span>
-                    <span className="caps mt-5 border-b border-current/40 pb-1 opacity-70 transition-opacity group-hover:opacity-100">
+                    <span className="label mt-5 border-b border-current/40 pb-1 opacity-70 transition-opacity group-hover:opacity-100">
                       The light is on
                     </span>
                   </Link>
@@ -114,7 +121,7 @@ function Door({ open, onKnock }: { open: boolean; onKnock: () => void }) {
         <rect x="8" y="178.5" width="84" height="1.5" fill="#f5e1b5" className="flicker" />
       </svg>
       {!open && (
-        <span className="caps absolute -bottom-10 left-1/2 -translate-x-1/2 whitespace-nowrap text-[0.6rem] opacity-0 transition-opacity duration-700 group-hover:opacity-60 group-focus-visible:opacity-60">
+        <span className="label absolute -bottom-10 left-1/2 -translate-x-1/2 whitespace-nowrap opacity-0 transition-opacity duration-700 group-hover:opacity-60 group-focus-visible:opacity-60">
           Knock
         </span>
       )}
@@ -130,7 +137,7 @@ function DemoEntry({ guests }: { guests: { id: string; name: string }[] }) {
         <input type="hidden" name="guest" value={first.id} />
         <button className="group inline-flex flex-col items-center">
           <span className="text-[2rem] font-light italic">Come in, {first.name}.</span>
-          <span className="caps mt-5 border-b border-current/40 pb-1 opacity-70 transition-opacity group-hover:opacity-100">Step inside</span>
+          <span className="label mt-5 border-b border-current/40 pb-1 opacity-70 transition-opacity group-hover:opacity-100">Step inside</span>
         </button>
       </form>
       {others.map((g) => (
@@ -169,7 +176,7 @@ function KeyEntry({ expired }: { expired: boolean }) {
         placeholder="your email"
         className="type mt-8 w-full max-w-[17rem] border-0 border-b border-current/30 bg-transparent pb-2 text-center text-[0.95rem] outline-none placeholder:opacity-40 focus:border-current/70"
       />
-      <button disabled={pending} className="caps mt-8 opacity-70 transition-opacity hover:opacity-100 disabled:opacity-40">
+      <button disabled={pending} className="label mt-8 opacity-70 transition-opacity hover:opacity-100 disabled:opacity-40">
         {pending ? "…" : "Ask for a key"}
       </button>
       {state.error && <p className="mt-6 max-w-xs text-base italic muted">{state.error}</p>}
