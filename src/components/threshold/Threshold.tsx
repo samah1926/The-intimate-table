@@ -95,28 +95,38 @@ function Door({ open, onKnock }: { open: boolean; onKnock: () => void }) {
         </defs>
         {/* light on the floor */}
         <ellipse cx="50" cy="182" rx="80" ry="14" fill="url(#floor)" className="flicker" />
-        {/* the frame */}
-        <path d="M2 180 V14 Q2 2 14 2 H86 Q98 2 98 14 V180" fill="none" stroke="currentColor" strokeWidth=".7" opacity=".55" />
-        {/* the door itself, which swings a little when you knock */}
-        <motion.g
-          style={{ transformOrigin: "6px 90px" }}
-          animate={open ? { scaleX: 0.72, skewY: -3 } : { scaleX: 1, skewY: 0 }}
-          transition={{ duration: 1.6, ease: [0.65, 0, 0.35, 1] }}
-        >
-          <rect x="6" y="6" width="88" height="174" fill="#0d0c0b" stroke="currentColor" strokeWidth=".5" opacity=".95" />
-          <circle cx="82" cy="98" r="1.6" fill="currentColor" opacity=".6" />
-        </motion.g>
-        {/* the gap once it opens */}
-        <motion.rect
-          x="68"
-          y="6"
-          width="26"
-          height="174"
-          fill="url(#spill)"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: open ? 1 : 0 }}
-          transition={{ duration: 1.6, delay: 0.4 }}
-        />
+        <clipPath id="arch-door">
+          <path d="M10 180 V63 A42 42 0 1 1 90 63 V180 Z" />
+        </clipPath>
+        {/* the frame: a horseshoe arch in a plaster wall */}
+        <path d="M4 180 V64 A48 48 0 1 1 96 64 V180" fill="none" stroke="currentColor" strokeWidth="2.4" opacity=".12" />
+        <path d="M6 180 V63 A46 46 0 1 1 94 63 V180" fill="none" stroke="currentColor" strokeWidth=".7" opacity=".55" />
+        <g clipPath="url(#arch-door)">
+          {/* the door itself, which swings a little when you knock */}
+          <motion.g
+            style={{ transformOrigin: "10px 110px" }}
+            animate={open ? { scaleX: 0.72, skewY: -3 } : { scaleX: 1, skewY: 0 }}
+            transition={{ duration: 1.6, ease: [0.65, 0, 0.35, 1] }}
+          >
+            <rect x="10" y="0" width="80" height="180" fill="#120d0a" />
+            {/* planks */}
+            {[30, 50, 70].map((x) => (
+              <line key={x} x1={x} y1="0" x2={x} y2="180" stroke="currentColor" strokeWidth=".3" opacity=".18" />
+            ))}
+            <circle cx="80" cy="112" r="1.6" fill="currentColor" opacity=".6" />
+          </motion.g>
+          {/* the gap once it opens */}
+          <motion.rect
+            x="64"
+            y="0"
+            width="30"
+            height="180"
+            fill="url(#spill)"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: open ? 1 : 0 }}
+            transition={{ duration: 1.6, delay: 0.4 }}
+          />
+        </g>
         {/* the line of light under the door */}
         <rect x="8" y="178.5" width="84" height="1.5" fill="#f5e1b5" className="flicker" />
       </svg>

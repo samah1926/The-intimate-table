@@ -94,5 +94,21 @@ After Chapter 0 the Memory Room has its first objects.
   cream, the Table by dark wood, the Library by green-black ink, the Studio by
   morning limestone, the Memory Room by near-darkness with objects lit.
 
+### Second moodboard: the house itself
+
+- **Plaster and arches.** Warm sand plaster, horseshoe arches, doorways that
+  show the light of the next room.
+- **Light through leaves.** Late sun cut by palm fronds on walls and floors;
+  shadows that move a little.
+- **Zellige, terracotta, brass, burgundy linen.** A tea tray left on green
+  tiles; a napkin dropped on the floor.
+- **The sea at the end of a corridor.** Evening colour, never a postcard.
+
+### Human traces
+
+Every room answers: *where are the traces?* A glass not quite finished, a
+napkin dropped, candles burned down, a book left face down, a coffee gone cold,
+a towel after the run. Never staged people looking at the camera.
+
 We do not want it to look like Airbnb, ClassPass, Headspace, Notion, a SaaS
 dashboard, an events marketplace or a generic luxury hotel.

@@ -145,6 +145,50 @@ src/components/
 - No sound by default. Audio only plays when a person presses play on a cassette
   or voice note.
 
+## Atmosphere, photography, sound
+
+The House should feel inhabited, so every room has four layers, back to front:
+
+1. **Light** (`src/lib/house/light.ts`): background, ink and glow per room.
+   Darkness is always warm and has a source (a lamp, candles); never flat black.
+2. **Air** (`components/house/Atmosphere.tsx`): a fixed layer per room with its
+   plate (plaster lit by the sun, sage wall by a window, limestone in morning
+   beams), palm-leaf shadows that sway, dust turning in the light, a curtain,
+   candle flicker. It cross-fades when you change rooms.
+3. **Surfaces and traces**: rooms that are surfaces (the Table, the Memory
+   Room, the Library desk) are drawn as walnut or oak; `components/objects/Traces.tsx`
+   lays out what people left (glasses, napkins, candles burned down, an open
+   book, a half-drunk coffee, a towel). Decorative only, never data.
+4. **Objects** (`components/objects/Physical.tsx`): the things that hold
+   memories, drawn as physical objects (Polaroid, folded menu, dried flower,
+   brass key, record in its sleeve, folded note).
+
+**Picking something up** (`MemoryFocus.tsx`) is a shared-element transition
+(Framer Motion `layoutId`): the object leaves its exact place, comes forward,
+and a tag tied to it gives chapter, date and time. *Remember more* lays out the
+memory's blocks as more objects (`Fragments.tsx`): prints, a torn slip for a
+quote, a tape label for the song, an index card, a folded map for a route.
+Putting it back returns it to where it lay.
+
+**Moving between rooms** plays `.through-door` (pure CSS): the next room opens
+from an arch while the light cross-fades. `prefers-reduced-motion` turns every
+ambient movement off.
+
+**Photography** (`components/photo/Photo.tsx`) has physical forms: `polaroid`
+(with handwriting and the camera's orange date stamp), `print`, `framed`,
+`bleed`. Any `media_assets.url` is used as-is; the prototype ships placeholder
+film-like photographs in `public/house/photos/`.
+
+**Materials and placeholder imagery** are rendered offline by
+`scripts/darkroom/` (Python, numpy): tileable textures (paper, linen, plaster,
+walnut, stone, terracotta, zellige), room plates, leaf shadows with alpha, and
+the photographs. Re-run to regenerate; replace any file with real material.
+
+**Sound** (`src/lib/house/ambience.ts`, `SoundToggle.tsx`) is off until a person
+turns it on, every visit. Each room names a recording (`file`) and, until one
+exists, a quiet synthesised stand-in from filtered noise (room tone, air,
+vinyl crackle, a distant glass). Rooms cross-fade.
+
 ## Trade-offs
 
 | Decision | Why | Cost |
@@ -153,6 +197,9 @@ src/components/
 | Load a per-viewer world snapshot, evaluate in memory | Rules stay simple TypeScript, and time preview is free | Fine for thousands of objects, not millions. Can move to SQL views later behind the same interface |
 | 2D + depth, drawn objects, no WebGL | Performant on phones, accessible, timeless. Emotion over spectacle | Less "wow" than 3D. Real photography replaces drawings as it arrives |
 | Drawn SVG objects as placeholders | No stock imagery, consistent tone | Real Chapter photos should be added through `media_assets` |
+| Procedural placeholder photographs | Stock photo hosts are unreachable here, and stock would feel generic; these are soft, film-like and on-palette | They read as impressions, not real photos: replace with Chapter 0 photography |
+| Fixed atmosphere layer + scrolling surfaces | Light stays in place as you move through a room; the table scrolls with its objects | Two layers to keep in tune per room |
+| Synthesised ambience | Proves the sound architecture with zero assets | Recordings will sound far better: drop files in `public/house/sound/` |
 | Demo store fallback | The prototype runs with zero setup and on any Vercel preview | Demo edits are not persistent |
 | Content blocks as JSON on `memories` | Memories vary a lot (route, recipe, playlist); new block types need no migration | Less relational querying inside a memory (not needed) |
 | Generic admin driven by config | One CRUD for twelve tables; easy to extend | Conventional look, which the brief allows |

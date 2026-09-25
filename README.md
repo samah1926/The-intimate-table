@@ -43,6 +43,22 @@ Demo edits live in memory and reset when the server restarts.
    `host@the-house.test` for the back office. Use real addresses for real guests.
    Only people who already exist can ask for a key: the House is by invitation.
 
+## Imagery and materials
+
+Placeholder photographs, room plates and textures in `public/house/` are
+rendered by `scripts/darkroom/`:
+
+```bash
+pip install numpy pillow scipy
+python3 scripts/darkroom/textures.py   # paper, linen, plaster, walnut, stone, terracotta, zellige
+python3 scripts/darkroom/plates.py     # the light of each room, leaf shadows
+python3 scripts/darkroom/photos.py     # film-like placeholder photographs
+```
+
+To use real photography, upload it and set `url` on the media asset (back
+office → Media). To add real ambient sound, put a recording in
+`public/house/sound/` and name it in `src/lib/house/ambience.ts`.
+
 ## Deploy
 
 Vercel, with the three environment variables. Without them, a Vercel preview

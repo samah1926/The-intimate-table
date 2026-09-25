@@ -44,10 +44,23 @@ Legend: `[x]` done · `[ ]` open · `[~]` in progress
 - [x] Reduced motion
 - [x] Typography / spacing review of every screen
 
+## Milestone 7 — Make the House feel alive
+- [x] Darkroom: textures, room plates, leaf shadows, placeholder photographs
+- [x] Light per room; warm darkness with a source; ambient movement (leaves, dust, candles, curtain, grain)
+- [x] Doorway transition: the next room opens from an arch
+- [x] Memory Room as a lamp-lit table; objects where they were left; phone arrangement
+- [x] Picking an object up: comes forward, tag with chapter / date / time, "remember more"
+- [x] Human traces in the Hall, Table, Library, Studio and Memory Room
+- [x] Photo component (polaroid, print, framed, full bleed, date stamp)
+- [x] Sound architecture (off by default, synthesised stand-ins)
+- [x] Typography: Instrument Sans for functional text; uppercase only on printed objects
+
 ## Next
 - [ ] Try it against a real Supabase project (schema, seed, magic link) — built, not yet run against one
 - [ ] Signed URLs for media in the private `house` bucket, and uploads from the admin
-- [ ] Real photography and audio for Chapter 0 to replace the drawn scenes
+- [ ] Real photography for Chapter 0 (replace `public/house/photos/*` via media URLs)
+- [ ] Real ambient recordings per room (`public/house/sound/`)
+- [ ] Decide whether the running shoes live in the Studio (today) or the Memory Room (one field in the admin)
 - [ ] Mark an invitation "opened" when its envelope is untied (today: remembered in the browser only)
 - [ ] Participants invited to a Chapter before its invitation date see its title early — date participants too
 - [ ] Journal: let people leave a sentence for later from the Memory Room (sealed_until)
