@@ -1,26 +1,221 @@
 @import "tailwindcss";
 
+/* ─────────────────────────────────────────────────────────────────────────
+   The House — design tokens
+   Paper, ink, thread. Light rather than colour.
+   ───────────────────────────────────────────────────────────────────────── */
+
+@theme {
+  --font-serif: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-type: var(--font-courier), "Courier Prime", "Courier New", monospace;
+  --font-hand: var(--font-hand-script), cursive;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --color-paper: #efe9dd;
+  --color-paper-deep: #e4dccd;
+  --color-card: #f7f3ec;
+  --color-ink: #1c1a17;
+  --color-ink-soft: #4d483f;
+  --color-ink-faint: #8b8478;
+  --color-thread: #151311;
+  --color-wood: #241a14;
+  --color-night: #100f0e;
+  --color-clay: #8a5a3c;
+  --color-moss: #3f4a3e;
+  --color-linen: #d9cfbd;
+  --color-bone: #e9e3d6;
+
+  --ease-house: cubic-bezier(0.22, 0.61, 0.24, 1);
+  --ease-door: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Each room is defined by its light. HouseShell sets these per room. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --room-bg: #ece6da;
+  --room-ink: #1c1a17;
+  --room-muted: #6f685d;
+  --room-rule: #1c1a1726;
+  --room-glow: #fff3da;
+  --grain-opacity: 0.07;
+  --tracking-caps: 0.32em;
+  color-scheme: light;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: var(--room-bg);
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--room-bg);
+  color: var(--room-ink);
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  transition:
+    background-color 1100ms var(--ease-house),
+    color 1100ms var(--ease-house);
+}
+
+@layer base {
+::selection {
+  background: #1c1a17;
+  color: #efe9dd;
+}
+
+:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 6px;
+}
+
+}
+
+@layer components {
+/* Paper grain over everything, very quiet. */
+.grain {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode: multiply;
+}
+
+[data-light="dark"] .grain {
+  mix-blend-mode: screen;
+  filter: invert(1);
+}
+
+/* Spaced capitals, like a name on a place card. */
+.caps {
+  font-family: var(--font-serif);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caps);
+  font-size: 0.72rem;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.caps-wide {
+  letter-spacing: 0.5em;
+}
+
+.type {
+  font-family: var(--font-type);
+  letter-spacing: 0.01em;
+}
+
+.hand {
+  font-family: var(--font-hand);
+}
+
+.rule {
+  border-color: var(--room-rule);
+}
+
+.muted {
+  color: var(--room-muted);
+}
+
+/* A sheet of paper: letters, menus, the memory sheet. */
+.paper {
+  background-color: var(--color-card);
+  color: var(--color-ink);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 1px 2px rgba(28, 26, 23, 0.08),
+    0 14px 44px -14px rgba(28, 26, 23, 0.3);
+}
+
+.link-quiet {
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 500ms var(--ease-house);
+}
+
+.link-quiet:hover,
+.link-quiet:focus-visible {
+  background-size: 100% 1px;
+}
+
+/* A soft pool of light under an object. */
+.lit {
+  isolation: isolate;
+}
+
+.lit::before {
+  content: "";
+  position: absolute;
+  inset: -18% -14% -22%;
+  background: radial-gradient(closest-side, var(--room-glow), transparent 72%);
+  opacity: 0.14;
+  z-index: -1;
+  transition: opacity 900ms var(--ease-house);
+  pointer-events: none;
+}
+
+.lit:hover::before,
+.lit:focus-within::before {
+  opacity: 0.3;
+}
+
+/* Something recently left: a slow breath of light, never a badge. */
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.14;
+  }
+  50% {
+    opacity: 0.44;
+  }
+}
+
+.lit.is-new::before {
+  animation: breathe 4.8s var(--ease-house) infinite;
+}
+
+@keyframes flicker {
+  0%,
+  100% {
+    opacity: 0.85;
+  }
+  45% {
+    opacity: 1;
+  }
+  55% {
+    opacity: 0.76;
+  }
+  70% {
+    opacity: 0.95;
+  }
+}
+
+.flicker {
+  animation: flicker 5.5s ease-in-out infinite;
+}
+
+.scroll-quiet {
+  scrollbar-width: none;
+}
+
+.scroll-quiet::-webkit-scrollbar {
+  display: none;
+}
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }
