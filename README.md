@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# The Intimate Table — The House
 
-## Getting Started
+> You don't open an app. You come back to a place.
 
-First, run the development server:
+A digital house that fills slowly with what people have actually lived at The
+Intimate Table's Chapters. Read [PRODUCT_VISION.md](PRODUCT_VISION.md) first.
+
+| Document | What it covers |
+|---|---|
+| [PRODUCT_VISION.md](PRODUCT_VISION.md) | The idea, the principles, the rooms, the visual language |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | How the House is composed, the rule engine, trade-offs |
+| [DATABASE_SCHEMA.md](DATABASE_SCHEMA.md) | Tables, memory blocks, visibility, security |
+| [MVP_PLAN.md](MVP_PLAN.md) | Scope, and a five-minute demo script |
+| [TODO.md](TODO.md) | What's done and what's next |
+
+## Run it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev          # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+With no environment variables, the House runs on its built-in demo content
+(`src/lib/seed`). Knock on the door, then enter as **Léa** (lived Chapter 0) or
+**Omar** (invited to Chapter 02, has lived nothing yet).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**Back office:** open the plan (top right) → *Back office*, or go to `/admin`.
+From there, **Preview** lets you see the House before, during and after a
+Chapter, 180 days later, or as someone else.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Demo edits live in memory and reset when the server restarts.
 
-## Learn More
+## With Supabase
 
-To learn more about Next.js, take a look at the following resources:
+1. Create a project. Run `supabase/migrations/0001_the_house.sql` in the SQL editor
+   (or `supabase db push`).
+2. Copy `.env.example` to `.env.local` and fill the three values.
+3. `npm run seed:supabase` — creates the demo people as auth users and furnishes
+   the House.
+4. In Auth → URL configuration, add `http://localhost:3000/auth/callback` (and
+   your Vercel URL) as redirect URLs.
+5. Sign in with a magic link: `lea@the-house.test`, `omar@the-house.test`, or
+   `host@the-house.test` for the back office. Use real addresses for real guests.
+   Only people who already exist can ask for a key: the House is by invitation.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deploy
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Vercel, with the three environment variables. Without them, a Vercel preview
+runs the demo.
 
-## Deploy on Vercel
+## Checks
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run typecheck    # route types + TypeScript
+npm run lint
+npm test             # the rule engine, as Léa and Omar would experience it
+npm run build
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Where things live
+
+```
+src/app/                 routes: threshold, /house/*, /admin/*, /r/[code]
+src/components/house/    shell, light, plan, doorways
+src/components/rooms/    Hall pieces, Table, Library, Unmarked Door
+src/components/objects/  drawn objects, memory sheets, memory blocks
+src/lib/rules/           conditions registry + resolver (+ tests)
+src/lib/house/           composeHouse, session, light
+src/lib/data/            demo store, Supabase store
+src/lib/seed/            demo content
+supabase/migrations/     schema
+```

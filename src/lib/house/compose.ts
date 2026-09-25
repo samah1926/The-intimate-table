@@ -167,8 +167,8 @@ export function composeHouse(world: World, now: Date): HouseView {
   const seenAt = (type: TargetType, id: string) =>
     world.unlocks.find((u) => u.user_id === viewer.id && u.target_type === type && u.target_id === id)?.seen_at ?? null;
 
-  const isNew = (type: TargetType, id: string, since: Date | null) => {
-    if (!since || now.getTime() - since.getTime() > NEW_FOR_DAYS * DAY) return false;
+  const isNew = (type: TargetType, id: string, since: Date | null, origin: string) => {
+    if (origin === "base" || !since || now.getTime() - since.getTime() > NEW_FOR_DAYS * DAY) return false;
     const seen = seenAt(type, id);
     return !seen || new Date(seen) < since;
   };
@@ -233,7 +233,7 @@ export function composeHouse(world: World, now: Date): HouseView {
       room: o.room_key,
       state: r.state,
       since: r.since?.toISOString() ?? null,
-      isNew: isNew("memory_object", o.id, r.since),
+      isNew: isNew("memory_object", o.id, r.since, r.origin),
       sealed_hint: r.state === "sealed" ? o.sealed_hint : null,
       placement: o.placement ?? {},
       chapter: chapterRef(o.chapter_id),
@@ -259,7 +259,7 @@ export function composeHouse(world: World, now: Date): HouseView {
       excerpt: open ? k.excerpt : null,
       body: open ? k.body : null,
       state: r.state,
-      isNew: isNew("knowledge_item", k.id, r.since),
+      isNew: isNew("knowledge_item", k.id, r.since, r.origin),
       sealed_hint: open ? null : k.sealed_hint,
       spine: k.spine ?? {},
       chapter: chapterRef(k.chapter_id),

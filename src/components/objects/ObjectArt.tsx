@@ -131,11 +131,6 @@ function Envelope({ label }: { label?: string | null }) {
       <rect x=".5" y=".5" width="199" height="139" fill={CARD} stroke={EDGE} strokeWidth=".6" />
       <path d="M.5 .5 L100 78 L199.5 .5" fill={CARD_SHADE} stroke={EDGE} strokeWidth=".6" />
       <path d="M.5 139.5 L80 70 M199.5 139.5 L120 70" stroke={EDGE} strokeWidth=".5" fill="none" />
-      <g stroke={THREAD} strokeWidth=".9" fill="none">
-        <path d="M-6 52 L206 86" />
-        <path d="M-6 58 L206 90" />
-        <path d="M70 -6 L96 146" />
-      </g>
       {label && <Caps x={100} y={118} size={6}>{label}</Caps>}
     </svg>
   );

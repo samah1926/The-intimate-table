@@ -10,6 +10,8 @@ export interface Resolution {
   since: Date | null;
   /** Rules that currently hold for this entity (for the admin preview). */
   reasons: string[];
+  /** What put it in its state. Things that were simply always there are never "new". */
+  origin: "base" | "chapter" | "rule" | "grant";
 }
 
 const RANK: Record<HouseState, number> = { absent: 0, sealed: 1, open: 2 };
@@ -40,7 +42,7 @@ export class Resolver {
     const hit = this.memo.get(key);
     if (hit) return hit;
     // A rule that depends on itself never holds.
-    if (this.visiting.has(key)) return { state: "absent", since: null, reasons: [] };
+    if (this.visiting.has(key)) return { state: "absent", since: null, reasons: [], origin: "base" };
     this.visiting.add(key);
     const r = this.compute(type, id);
     this.visiting.delete(key);
@@ -49,7 +51,7 @@ export class Resolver {
   }
 
   /** Base state after scoping: who this thing can exist for at all. */
-  private base(type: TargetType, id: string): { state: HouseState; since: Date | null; scoped: boolean } | null {
+  private base(type: TargetType, id: string): { state: HouseState; since: Date | null; scoped: boolean; fromChapter?: boolean } | null {
     const { world, viewerId, now } = this;
     const attended = (chapterId: string) => {
       const ch = world.chapters.find((c) => c.id === chapterId);
@@ -64,7 +66,7 @@ export class Resolver {
         if (o.chapter_id) {
           const ch = attended(o.chapter_id);
           if (!ch) return { state: "absent", since: null, scoped: true };
-          return { state: o.base_state, since: afterglowMoment(ch), scoped: false };
+          return { state: o.base_state, since: afterglowMoment(ch), scoped: false, fromChapter: true };
         }
         return { state: o.base_state, since: d(o.created_at), scoped: false };
       }
@@ -74,7 +76,7 @@ export class Resolver {
         if (k.chapter_id) {
           const ch = attended(k.chapter_id);
           if (!ch) return { state: "absent", since: null, scoped: true };
-          return { state: k.base_state, since: afterglowMoment(ch), scoped: false };
+          return { state: k.base_state, since: afterglowMoment(ch), scoped: false, fromChapter: true };
         }
         return { state: k.base_state, since: d(k.created_at), scoped: false };
       }
@@ -104,35 +106,38 @@ export class Resolver {
 
   private compute(type: TargetType, id: string): Resolution {
     const base = this.base(type, id);
-    if (!base || base.scoped) return { state: "absent", since: null, reasons: [] };
+    if (!base || base.scoped) return { state: "absent", since: null, reasons: [], origin: "base" };
 
     let state = base.state;
     let since = base.since;
+    let origin: Resolution["origin"] = base.fromChapter ? "chapter" : "base";
     const reasons: string[] = [];
 
-    const raise = (to: HouseState, at: Date | null, reason: string) => {
+    const raise = (to: HouseState, at: Date | null, reason: string, by: "rule" | "grant") => {
       reasons.push(reason);
       if (RANK[to] > RANK[state]) {
         state = to;
         since = at;
+        origin = by;
       } else if (to === state && at && (!since || at < since)) {
         since = at;
+        origin = by;
       }
     };
 
     for (const rule of this.world.rules) {
       if (!rule.active || rule.target_type !== type || rule.target_id !== id) continue;
       const v = evaluate(rule.conditions, this.ctx);
-      if (v.ok) raise(EFFECT_STATE[rule.effect], v.since, rule.name);
+      if (v.ok) raise(EFFECT_STATE[rule.effect], v.since, rule.name, "rule");
     }
 
     const grant = this.world.unlocks.find(
       (u) => u.user_id === this.viewerId && u.target_type === type && u.target_id === id && u.granted_state,
     );
     if (grant?.granted_state && (!grant.granted_at || new Date(grant.granted_at) <= this.now)) {
-      raise(grant.granted_state, d(grant.granted_at), `granted (${grant.source ?? "host"})`);
+      raise(grant.granted_state, d(grant.granted_at), `granted (${grant.source ?? "host"})`, "grant");
     }
 
-    return { state, since, reasons };
+    return { state, since, reasons, origin };
   }
 }
