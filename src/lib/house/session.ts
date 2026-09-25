@@ -7,6 +7,7 @@ import type { Profile } from "@/lib/domain/types";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { createSessionClient } from "@/lib/supabase/server";
 import { composeHouse } from "./compose";
+import { DEMO_NOW } from "@/lib/seed";
 
 export const GUEST_COOKIE = "house_guest";
 export const CLOCK_COOKIE = "house_clock";
@@ -41,7 +42,9 @@ export const getHouseContext = cache(async (): Promise<HouseContext | null> => {
   if (!signedIn) return null;
   const jar = await cookies();
   let viewerId = signedIn.id;
-  let now = new Date();
+  // In the demo the present is fixed a few days after Chapter 0, so the House
+  // is lived in when you arrive. "real" in the clock cookie uses today's date.
+  let now = isSupabaseConfigured() ? new Date() : new Date(DEMO_NOW);
   const previewing = { clock: false, viewAs: false };
 
   if (await canPreview(signedIn)) {
@@ -51,7 +54,7 @@ export const getHouseContext = cache(async (): Promise<HouseContext | null> => {
       previewing.viewAs = true;
     }
     const clock = jar.get(CLOCK_COOKIE)?.value;
-    const t = clock ? new Date(clock) : null;
+    const t = clock === "real" ? new Date() : clock ? new Date(clock) : null;
     if (t && !Number.isNaN(t.getTime())) {
       now = t;
       previewing.clock = true;

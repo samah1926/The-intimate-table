@@ -3,6 +3,7 @@
 import { useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { answerPrelude } from "@/app/house/actions";
+import { Monogram } from "@/components/paper/Monogram";
 import type { ChapterMoment } from "@/lib/house/compose";
 
 // An invitation to the next Chapter arrives as an envelope tied with thread.
@@ -74,17 +75,28 @@ export function ChapterEnvelope({ moment, firstName }: { moment: ChapterMoment; 
 function Envelope({ label, to, untying }: { label: string; to: string; untying: boolean }) {
   const t = { duration: 0.9, ease: [0.65, 0, 0.35, 1] as const };
   return (
-    <div className="relative aspect-[10/7] w-full drop-shadow-[0_18px_24px_rgba(28,26,23,0.22)]">
+    <div className="relative aspect-[10/7] w-full drop-shadow-[0_18px_24px_rgba(40,14,18,0.35)]">
       <svg viewBox="0 0 200 140" className="absolute inset-0 h-full w-full" aria-hidden>
-        <rect x=".5" y=".5" width="199" height="139" fill="#f4efe6" stroke="#cfc5b4" strokeWidth=".6" />
-        <path d="M.5 139.5 L82 66 M199.5 139.5 L118 66" stroke="#d6cdbd" strokeWidth=".6" fill="none" />
-        <text x="100" y="116" textAnchor="middle" fontFamily="var(--font-serif)" fontSize="6.4" letterSpacing="2.8" fill="#1c1a17">
+        <rect x=".5" y=".5" width="199" height="139" fill="#4a1a20" />
+        <rect x=".5" y=".5" width="199" height="139" fill="url(#env-sheen)" />
+        <path d="M.5 139.5 L82 66 M199.5 139.5 L118 66" stroke="#2f0f14" strokeWidth=".8" fill="none" />
+        <text x="24" y="118" fontFamily="var(--font-serif)" fontSize="6" letterSpacing="2.6" fill="#e3d2b8">
           {label}
         </text>
-        <text x="26" y="104" fontFamily="var(--font-hand)" fontSize="15" fill="#1c1a17" opacity=".85">
+        <text x="24" y="104" fontFamily="var(--font-hand)" fontSize="15" fill="#e3d2b8" opacity=".9">
           for {to}
         </text>
+        <defs>
+          <linearGradient id="env-sheen" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#fff" stopOpacity=".08" />
+            <stop offset=".5" stopColor="#fff" stopOpacity="0" />
+            <stop offset="1" stopColor="#000" stopOpacity=".18" />
+          </linearGradient>
+        </defs>
       </svg>
+      <div className="pointer-events-none absolute bottom-[7%] right-[5%] w-[16%] text-[#d9c5a8]">
+        <Monogram size={0} className="h-auto w-full" />
+      </div>
       {/* the flap lifts */}
       <motion.svg
         viewBox="0 0 200 80"
@@ -94,7 +106,7 @@ function Envelope({ label, to, untying }: { label: string; to: string; untying: 
         transition={{ ...t, delay: 0.45 }}
         aria-hidden
       >
-        <path d="M.5 .5 L100 78 L199.5 .5 Z" fill="#ebe4d7" stroke="#cfc5b4" strokeWidth=".6" />
+        <path d="M.5 .5 L100 78 L199.5 .5 Z" fill="#3d151b" stroke="#2a0d12" strokeWidth=".6" />
       </motion.svg>
       {/* thread */}
       <svg viewBox="0 0 200 140" className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden>
@@ -102,15 +114,15 @@ function Envelope({ label, to, untying }: { label: string; to: string; untying: 
           <motion.path
             key={d}
             d={d}
-            stroke="#151311"
-            strokeWidth=".9"
+            stroke="#d9c5a8"
+            strokeWidth="1"
             fill="none"
             initial={false}
             animate={untying ? { pathLength: 0, opacity: 0 } : { pathLength: 1, opacity: 1 }}
             transition={{ ...t, delay: i * 0.08 }}
           />
         ))}
-        <motion.circle cx="90" cy="68" r="2.2" fill="#151311" animate={untying ? { opacity: 0, scale: 0 } : { opacity: 1 }} transition={t} />
+        <motion.circle cx="90" cy="68" r="2.4" fill="#d9c5a8" animate={untying ? { opacity: 0, scale: 0 } : { opacity: 1 }} transition={t} />
       </svg>
     </div>
   );
@@ -139,7 +151,17 @@ function when(iso: string | null) {
 export function InvitationCard({ moment }: { moment: ChapterMoment }) {
   const c = moment.chapter;
   return (
-    <article className="paper relative px-7 py-12 sm:px-12 sm:py-14">
+    <article className="paper relative">
+      {/* the stub, torn along a perforation, as on the tickets */}
+      <div className="flex items-center justify-between gap-4 border-b border-dashed border-ink/25 px-7 py-4 sm:px-12">
+        <span className="font-serif text-[0.62rem] uppercase leading-tight tracking-[0.16em] text-ink-soft">
+          The
+          <br />
+          Intimate Table
+        </span>
+        <Monogram size={34} className="text-ink/80" />
+      </div>
+      <div className="px-7 py-10 sm:px-12 sm:py-12">
       <p className="caps text-center text-ink-soft">Chapter {c.number}</p>
       {c.title && <h2 className="mt-5 text-center text-[3rem] font-light italic leading-none sm:text-[3.6rem]">{c.title}</h2>}
       {c.subtitle && <p className="mx-auto mt-5 max-w-xs text-center text-lg leading-snug text-ink-soft">{c.subtitle}</p>}
@@ -171,6 +193,7 @@ export function InvitationCard({ moment }: { moment: ChapterMoment }) {
           {p.response_prompt && <PreludeAnswer preludeId={p.id} prompt={p.response_prompt} answered={!!p.answer} />}
         </section>
       ))}
+      </div>
     </article>
   );
 }

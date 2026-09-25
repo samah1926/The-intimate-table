@@ -4,6 +4,7 @@ import { useId } from "react";
 import type { ObjectView } from "@/lib/house/compose";
 import { Photo, cameraDate } from "@/components/photo/Photo";
 import { ObjectArt } from "./ObjectArt";
+import { Monogram } from "@/components/paper/Monogram";
 
 // Objects as they would lie on a table: paper with grain, brass that catches
 // the lamp, a record half out of its sleeve. Each returns a box that fills its
@@ -18,7 +19,7 @@ export const PHYSICAL_ASPECT: Record<string, number> = {
   record: 1.22,
   note: 1.3,
   envelope: 1.43,
-  invitation: 1.33,
+  invitation: 1.2,
   postcard: 1.5,
   place_card: 0.71,
   shoes: 2,
@@ -47,13 +48,15 @@ export function Physical({ object, large = false }: { object: ObjectView; large?
       );
     }
     case "menu":
-      return <FoldedMenu label={object.label} />;
+      return <FoldedMenu />;
     case "flower":
       return <DriedFlower />;
     case "key":
       return <BrassKey />;
     case "record":
       return <Vinyl label={object.label} spinning={large && object.state === "open"} />;
+    case "invitation":
+      return <BurgundyEnvelope chapter={object.chapter?.label ?? null} />;
     case "note":
       return object.label ? <ObjectArt kind="note" label={object.label} /> : <FoldedNote />;
     default:
@@ -61,77 +64,67 @@ export function Physical({ object, large = false }: { object: ObjectView; large?
   }
 }
 
-function FoldedMenu({ label }: { label: string | null }) {
-  const lines = ["Bread, butter, radishes", "Tomato, peach, basil", "Fish baked in salt", "Whatever was left", "Fig leaf, coffee"];
+function FoldedMenu() {
+  const courses = ["Charred vegetables, olive and citrus", "Sea bass, herbs, lemon", "Lamb, slow cooked", "Orange blossom, almond, honey"];
   return (
-    <div className="relative flex h-full w-full [perspective:600px]">
+    <div className="@container relative flex h-full w-full [perspective:600px]">
       {/* folded in half: the left leaf lifts a little */}
       <div className="tex-paper relative h-full w-1/2 origin-right bg-[#f2ece1] [transform:rotateY(14deg)]" style={{ boxShadow: "inset -14px 0 18px -12px rgba(60,40,20,0.35)" }}>
-        <div className="absolute inset-x-[14%] top-[12%] text-center">
-          <p className="caps text-[clamp(0.35rem,1vw,0.6rem)] text-[#2a2118]">{label ?? "Menu"}</p>
-          <div className="mx-auto mt-[12%] h-px w-1/3 bg-[#2a2118]/40" />
+        <div className="absolute inset-x-[10%] top-[16%] text-center text-[#2a2118]">
+          <p className="font-serif text-[7cqw] uppercase leading-[1.05] tracking-[0.08em]">
+            The
+            <br />
+            Intimate
+            <br />
+            Table
+          </p>
+          <p className="mt-[14%] font-serif text-[3.2cqw] uppercase tracking-[0.2em]">Morocco</p>
+          <p className="font-serif text-[3.2cqw] uppercase tracking-[0.2em]">13 March 2027</p>
         </div>
-        <p className="hand absolute bottom-[10%] left-[14%] text-[clamp(0.6rem,1.6vw,1.1rem)] text-[#2a2118]/70">for Léa</p>
+        <p className="hand absolute bottom-[8%] left-[12%] text-[8cqw] text-[#2a2118]/70">for Léa</p>
       </div>
       <div className="tex-paper relative h-full w-1/2 bg-[#f5efe5]" style={{ boxShadow: "inset 10px 0 14px -10px rgba(60,40,20,0.3)" }}>
-        <div className="absolute inset-x-[10%] top-[14%] space-y-[9%] text-center">
-          {lines.map((l, i) => (
-            <p key={l} className="text-[clamp(0.3rem,0.85vw,0.55rem)] leading-tight text-[#4f463c]">
-              <span className="block italic text-[#8a7f71]">{["i", "ii", "iii", "iv", "v"][i]}</span>
+        <div className="absolute inset-x-[10%] top-[18%] space-y-[16%] text-center">
+          {courses.map((l) => (
+            <p key={l} className="font-serif text-[3.6cqw] leading-tight text-[#3d342b]">
               {l}
             </p>
           ))}
         </div>
-        {/* a small wine stain */}
-        <div className="absolute bottom-[8%] right-[12%] h-[16%] w-[26%] rounded-full border border-[#7a2a33]/30 opacity-70" />
+        {/* a burgundy ribbon, still tied */}
+        <div className="absolute inset-y-0 left-[18%] w-[5%] bg-[#5a2028] opacity-90 shadow-[1px_0_2px_rgba(0,0,0,0.3)]" />
+        <div className="absolute bottom-[8%] right-[12%] h-[14%] w-[24%] rounded-full border border-[#7a2a33]/30 opacity-70" />
       </div>
     </div>
   );
 }
 
 function DriedFlower() {
-  const petal = `petal-${useId().replace(/:/g, "")}`;
+  const id = useId().replace(/:/g, "");
   return (
     <svg viewBox="0 0 100 200" className="h-full w-full overflow-visible" aria-hidden>
       <defs>
-        <radialGradient id={petal} cx="50%" cy="20%" r="80%">
-          <stop offset="0" stopColor="#efe2c6" />
-          <stop offset="1" stopColor="#c9ab7c" />
+        <radialGradient id={`spathe-${id}`} cx="40%" cy="35%" r="75%">
+          <stop offset="0" stopColor="#8e2a33" />
+          <stop offset=".7" stopColor="#5a1a22" />
+          <stop offset="1" stopColor="#3a1016" />
         </radialGradient>
       </defs>
-      <g fill="none" stroke="#7d6a45" strokeWidth="1.2" strokeLinecap="round">
-        <path d="M52 196 C49 150 44 110 50 60" />
-        <path d="M48 140 C36 130 28 134 20 122 C32 120 40 126 48 134" fill="#a39062" fillOpacity=".5" />
-        <path d="M50 110 C62 102 72 104 80 94 C68 92 60 98 50 104" fill="#a39062" fillOpacity=".5" />
-        <path d="M51 150 C58 146 64 140 66 132" stroke="#8d7a50" />
+      {/* a dried anthurium: the stem long and a little bent */}
+      <path d="M58 196 C54 150 50 108 54 70" fill="none" stroke="#6d5a3c" strokeWidth="2" strokeLinecap="round" />
+      <path d="M54 70 C30 72 10 56 12 34 C14 14 34 6 48 20 C54 8 76 6 86 22 C96 40 80 66 54 70 Z" fill={`url(#spathe-${id})`} stroke="#2e0c11" strokeWidth=".6" />
+      {/* the veins, as it dries */}
+      <g fill="none" stroke="#b8505a" strokeOpacity=".35" strokeWidth=".7">
+        <path d="M54 68 C44 56 32 44 22 32" />
+        <path d="M54 68 C60 54 70 42 80 30" />
+        <path d="M54 68 C50 50 48 36 48 22" />
       </g>
-      <g transform="translate(50 46)">
-        {Array.from({ length: 13 }).map((_, i) => (
-          <ellipse
-            key={i}
-            cx="0"
-            cy="-15"
-            rx="3.6"
-            ry={9 + (i % 3)}
-            fill={`url(#${petal})`}
-            stroke="#a58a5c"
-            strokeWidth=".4"
-            transform={`rotate(${(i / 13) * 360 + (i % 2) * 7})`}
-            opacity={i === 4 || i === 9 ? 0 : 0.95}
-          />
-        ))}
-        <circle r="7.5" fill="#b9892e" />
-        <circle r="7.5" fill={`url(#${petal})`} opacity=".25" />
-      </g>
-      <g transform="translate(70 72) scale(.42) rotate(20)">
-        {Array.from({ length: 10 }).map((_, i) => (
-          <ellipse key={i} cx="0" cy="-15" rx="3.6" ry="9" fill="#e3d2ad" transform={`rotate(${(i / 10) * 360})`} />
-        ))}
-        <circle r="7" fill="#a87c2c" />
-      </g>
-      {/* two fallen petals */}
-      <ellipse cx="22" cy="176" rx="3" ry="7" fill="#dcc79f" transform="rotate(40 22 176)" />
-      <ellipse cx="80" cy="160" rx="3" ry="6.5" fill="#d8c396" transform="rotate(-25 80 160)" />
+      <path d="M20 40 C28 30 38 26 46 28" fill="none" stroke="#e6a3a8" strokeOpacity=".3" strokeWidth="2" strokeLinecap="round" />
+      {/* the spadix */}
+      <path d="M52 52 C56 40 60 30 62 16" stroke="#c9a14a" strokeWidth="4.5" strokeLinecap="round" fill="none" />
+      <path d="M52 52 C56 40 60 30 62 16" stroke="#8a6a26" strokeWidth="4.5" strokeLinecap="round" strokeDasharray="1 2" fill="none" opacity=".6" />
+      {/* a fallen fleck */}
+      <ellipse cx="30" cy="170" rx="3" ry="5" fill="#5a1a22" opacity=".7" transform="rotate(30 30 170)" />
     </svg>
   );
 }
@@ -177,6 +170,37 @@ function Vinyl({ label, spinning }: { label: string | null; spinning: boolean })
         <div className="absolute inset-[10%] rounded-full border border-[#2a2118]/10" />
         <p className="hand absolute left-[12%] top-[10%] text-[clamp(0.8rem,2.2vw,1.6rem)] leading-none text-[#2a2118]">Thirty</p>
         {label && <p className="caps absolute bottom-[9%] left-[12%] text-[clamp(0.3rem,0.8vw,0.5rem)] text-[#2a2118]/80">{label}</p>}
+      </div>
+    </div>
+  );
+}
+
+function BurgundyEnvelope({ chapter }: { chapter: string | null }) {
+  return (
+    <div className="@container relative h-full w-full">
+      {/* the card, half drawn out */}
+      <div className="tex-paper absolute inset-x-[6%] top-0 h-[62%] bg-[#f3ede2] px-[6%] pt-[5%] text-[#2a2118] shadow-[0_2px_4px_rgba(0,0,0,0.25)]">
+        <p className="font-serif text-[5.4cqw] uppercase leading-[1.02] tracking-[0.06em]">
+          The
+          <br />
+          Intimate
+          <br />
+          Table
+        </p>
+        <p className="absolute bottom-[10%] right-[6%] text-right font-serif text-[2.4cqw] uppercase leading-snug tracking-[0.14em]">
+          Morocco
+          <br />
+          {chapter ?? "Chapter 0"}
+          <br />
+          13 — 16 March 2027
+        </p>
+      </div>
+      {/* the envelope */}
+      <div className="absolute inset-x-0 bottom-0 h-[62%] bg-[#4a1a20] shadow-[0_-6px_10px_-6px_rgba(0,0,0,0.5)]" style={{ backgroundImage: "linear-gradient(170deg, rgba(255,255,255,0.06), transparent 40%), url(/house/textures/paper.webp)", backgroundBlendMode: "normal, multiply", backgroundSize: "auto, 256px" }}>
+        <div className="absolute inset-x-0 top-0 h-[42%]" style={{ background: "linear-gradient(160deg, rgba(0,0,0,0.25), transparent 60%)", clipPath: "polygon(0 0, 50% 100%, 100% 0)" }} />
+        <div className="absolute bottom-[8%] right-[6%] text-[#d9c5a8]">
+          <Monogram size={0} className="h-[22cqw] w-[22cqw]" />
+        </div>
       </div>
     </div>
   );

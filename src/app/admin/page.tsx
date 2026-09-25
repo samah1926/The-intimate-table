@@ -6,6 +6,7 @@ import type { TargetType, World } from "@/lib/domain/types";
 import { getHouseContext } from "@/lib/house/session";
 import { describe } from "@/lib/rules/conditions";
 import { Resolver } from "@/lib/rules/resolve";
+import { DEMO_NOW } from "@/lib/seed";
 
 const DAY = 86_400_000;
 const fmt = (d: Date) =>
@@ -49,6 +50,7 @@ export default async function AdminHome() {
   if (!world) return null;
   const resolver = new Resolver(world, ctx.viewerId, ctx.now);
   const presets = moments(world);
+  const demo = store.mode === "demo";
   const isoLocal = ctx.now.toISOString().slice(0, 16);
 
   return (
@@ -61,8 +63,13 @@ export default async function AdminHome() {
           <legend className="text-sm font-medium">When</legend>
           <div className="mt-2 space-y-1.5 text-sm">
             <label className="flex items-center gap-2">
-              <input type="radio" name="clock" value="" defaultChecked={!ctx.previewing.clock} /> Now (real time)
+              <input type="radio" name="clock" value="" defaultChecked={!ctx.previewing.clock} /> {demo ? `The demo’s present · ${fmt(new Date(DEMO_NOW))}` : "Now"}
             </label>
+            {demo && (
+              <label className="flex items-center gap-2">
+                <input type="radio" name="clock" value="real" /> Today (real time)
+              </label>
+            )}
             {presets.map((p) => (
               <label key={p.label} className="flex items-center gap-2">
                 <input type="radio" name="clock" value={p.at.toISOString()} defaultChecked={ctx.previewing.clock && Math.abs(+p.at - +ctx.now) < 60_000} />

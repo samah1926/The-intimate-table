@@ -55,10 +55,16 @@ Legend: `[x]` done · `[ ]` open · `[~]` in progress
 - [x] Sound architecture (off by default, synthesised stand-ins)
 - [x] Typography: Instrument Sans for functional text; uppercase only on printed objects
 
+## Milestone 8 — Chapter 0 in its own images
+- [x] Real photographs of Chapter 0 (table at sunset, anthuriums, envelope, ticket, menu, welcome card, bundle, morning arch, library)
+- [x] Chapter 0 content aligned: Morocco, 13–16 March 2027, dinner at 18:30, the real menu, anthuriums
+- [x] ITT monogram, burgundy envelope, ticket-style invitation with a stub
+- [x] Demo "present" fixed ten days after Chapter 0 (hosts can switch to real time in Preview)
+
 ## Next
 - [ ] Try it against a real Supabase project (schema, seed, magic link) — built, not yet run against one
 - [ ] Signed URLs for media in the private `house` bucket, and uploads from the admin
-- [ ] Real photography for Chapter 0 (replace `public/house/photos/*` via media URLs)
+- [ ] Real photography for the run, the Studio and the late-night table (still procedural placeholders)
 - [ ] Real ambient recordings per room (`public/house/sound/`)
 - [ ] Decide whether the running shoes live in the Studio (today) or the Memory Room (one field in the admin)
 - [ ] Mark an invitation "opened" when its envelope is untied (today: remembered in the browser only)

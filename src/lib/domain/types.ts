@@ -194,7 +194,7 @@ export interface KnowledgeItem {
   chapter_id: string | null;
   base_state: HouseState;
   sealed_hint: string | null;
-  spine: { height?: number; tone?: "ink" | "clay" | "moss" | "bone" | "linen" };
+  spine: { height?: number; tone?: "ink" | "clay" | "moss" | "bone" | "linen"; cover?: string };
   sort: number;
   created_at: ISODate;
 }

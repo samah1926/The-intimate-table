@@ -98,8 +98,9 @@ export async function setPreview(formData: FormData) {
   const as = String(formData.get("as") ?? "");
   const opts = { httpOnly: true, sameSite: "lax" as const, path: "/" };
 
-  const t = clock === "custom" ? (custom ? new Date(`${custom}Z`) : null) : clock ? new Date(clock) : null;
-  if (t && !Number.isNaN(t.getTime())) jar.set(CLOCK_COOKIE, t.toISOString(), opts);
+  const t = clock === "custom" ? (custom ? new Date(`${custom}Z`) : null) : clock && clock !== "real" ? new Date(clock) : null;
+  if (clock === "real") jar.set(CLOCK_COOKIE, "real", opts);
+  else if (t && !Number.isNaN(t.getTime())) jar.set(CLOCK_COOKIE, t.toISOString(), opts);
   else jar.delete(CLOCK_COOKIE);
 
   if (as) jar.set(VIEW_AS_COOKIE, as, opts);

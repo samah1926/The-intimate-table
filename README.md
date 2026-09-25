@@ -22,7 +22,9 @@ npm run dev          # http://localhost:3000
 
 With no environment variables, the House runs on its built-in demo content
 (`src/lib/seed`). Knock on the door, then enter as **Léa** (lived Chapter 0) or
-**Omar** (invited to Chapter 02, has lived nothing yet).
+**Omar** (invited to Chapter 02, has lived nothing yet). In the demo, "now" is
+26 March 2027, ten days after Chapter 0; Preview in the back office moves the
+clock anywhere, including to today.
 
 **Back office:** open the plan (top right) → *Back office*, or go to `/admin`.
 From there, **Preview** lets you see the House before, during and after a
@@ -45,8 +47,9 @@ Demo edits live in memory and reset when the server restarts.
 
 ## Imagery and materials
 
-Placeholder photographs, room plates and textures in `public/house/` are
-rendered by `scripts/darkroom/`:
+Photographs of Chapter 0 live in `public/house/photos/chapter-0/`. The remaining
+placeholder photographs, room plates and textures in `public/house/` are rendered
+by `scripts/darkroom/`:
 
 ```bash
 pip install numpy pillow scipy

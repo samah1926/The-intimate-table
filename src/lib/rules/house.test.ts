@@ -30,11 +30,11 @@ function world(viewerId: string, patch: Partial<World> = {}): World {
 }
 
 const at = (iso: string) => new Date(iso);
-const NOW = at("2026-09-25T15:00:00Z");
+const NOW = at(seed.DEMO_NOW);
 const obj = (v: ReturnType<typeof composeHouse>, slug: string) => v.objects.find((o) => o.slug === slug);
 
 describe("before Chapter 0", () => {
-  const v = composeHouse(world(seed.LEA), at("2026-08-25T10:00:00Z"));
+  const v = composeHouse(world(seed.LEA), at("2027-01-20T10:00:00Z"));
   it("the Memory Room is empty", () => expect(v.objects.filter((o) => o.room === "memory")).toHaveLength(0));
   it("the Hall holds the invitation and its one question", () => {
     const m = v.hall.moments.find((x) => x.chapter.id === seed.CH0);
@@ -46,7 +46,7 @@ describe("before Chapter 0", () => {
 
 describe("during Chapter 0", () => {
   it("the House goes quiet", () => {
-    const v = composeHouse(world(seed.LEA), at("2026-09-12T20:00:00Z"));
+    const v = composeHouse(world(seed.LEA), at("2027-03-13T20:00:00Z"));
     expect(v.hall.moments.find((m) => m.chapter.id === seed.CH0)?.phase).toBe("during");
     expect(v.objects.filter((o) => o.room === "memory")).toHaveLength(0);
   });
@@ -81,7 +81,7 @@ describe("after Chapter 0, for Léa", () => {
 
 describe("time-based unlock", () => {
   it("180 days after Chapter 0, the letter opens with what she wrote", () => {
-    const v = composeHouse(world(seed.LEA), at("2027-03-14T10:00:00Z"));
+    const v = composeHouse(world(seed.LEA), at("2027-09-20T10:00:00Z"));
     const letter = obj(v, "a-letter-to-yourself");
     expect(letter?.state).toBe("open");
     const journal = letter?.memory?.blocks.find((b) => b.type === "journal");
@@ -94,7 +94,7 @@ describe("mutual consent", () => {
   it("reveals contact only when both asked", () => {
     const w = world(seed.LEA);
     const jakub = w.profiles.find((p) => p.first_name === "Jakub")!;
-    w.connections.push({ id: "x", from_user: seed.LEA, to_user: jakub.id, chapter_id: seed.CH0, created_at: "2026-09-20T10:00:00Z" });
+    w.connections.push({ id: "x", from_user: seed.LEA, to_user: jakub.id, chapter_id: seed.CH0, created_at: "2027-03-20T10:00:00Z" });
     const card = composeHouse(w, NOW).table.placeCards.find((c) => c.person_id === jakub.id);
     expect(card?.connection).toBe("mutual");
     expect(card?.contact).toBeTruthy();
@@ -102,7 +102,7 @@ describe("mutual consent", () => {
   it("one side alone shows only your own ask", () => {
     const w = world(seed.LEA);
     const selma = w.profiles.find((p) => p.first_name === "Selma")!;
-    w.connections.push({ id: "y", from_user: seed.LEA, to_user: selma.id, chapter_id: seed.CH0, created_at: "2026-09-20T10:00:00Z" });
+    w.connections.push({ id: "y", from_user: seed.LEA, to_user: selma.id, chapter_id: seed.CH0, created_at: "2027-03-20T10:00:00Z" });
     const card = composeHouse(w, NOW).table.placeCards.find((c) => c.person_id === selma.id);
     expect(card?.connection).toBe("asked");
     expect(card?.contact).toBeNull();

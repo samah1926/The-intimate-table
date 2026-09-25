@@ -23,10 +23,10 @@ function OnTheWall() {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0">
       <div className="absolute left-[64%] top-[6%] w-[8%] rotate-[-1.5deg]">
-        <Photo form="framed" media={{ url: "/house/photos/arch.webp", scene: "window", alt: "" }} aspect="3 / 4" />
+        <Photo form="framed" media={{ url: "/house/photos/chapter-0/table-sunset.webp", scene: "table", alt: "" }} aspect="3 / 4" />
       </div>
       <div className="absolute left-[75%] top-[11%] w-[6%] rotate-[1deg]">
-        <Photo form="framed" media={{ url: "/house/photos/sea-dawn.webp", scene: "dawn", alt: "" }} aspect="1 / 1" />
+        <Photo form="framed" media={{ url: "/house/photos/chapter-0/morning-arch.webp", scene: "window", alt: "" }} aspect="1 / 1" />
       </div>
       {/* the lamp's light falls on the wall too */}
       <div className="absolute inset-x-0 top-0 h-[36%]" style={{ background: "radial-gradient(40% 70% at 50% 100%, rgba(255,200,130,0.14), transparent 70%)" }} />

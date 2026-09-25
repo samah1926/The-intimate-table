@@ -37,7 +37,7 @@ export function Doorways({ from, rooms, title = "Through here" }: { from: RoomKe
 /** What you glimpse of each room through its doorway: its light. */
 const GLIMPSE: Partial<Record<RoomKey, string>> = {
   hall: "/house/plates/hall.webp",
-  table: "/house/photos/candles.webp",
+  table: "/house/photos/chapter-0/table-sunset.webp",
   library: "/house/plates/library.webp",
   studio: "/house/plates/studio.webp",
   memory: "/house/plates/memory.webp",

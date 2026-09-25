@@ -8,6 +8,7 @@ import type { KnowledgeView } from "@/lib/house/compose";
 import { useMounted } from "@/lib/use-mounted";
 import { Thread } from "@/components/objects/ObjectArt";
 import { Traces } from "@/components/objects/Traces";
+import { Photo } from "@/components/photo/Photo";
 
 // Books on a shelf, notebooks and cards on the desk.
 // Not a blog: you take something down, read it, and put it back.
@@ -92,6 +93,10 @@ export function Library({ items, initialOpen }: { items: KnowledgeView[]; initia
             <div className="sm:hidden">
               <Traces room="library" mobile />
             </div>
+          {/* someone left a novel here, face up */}
+          <div aria-hidden className="on-surface pointer-events-none absolute bottom-6 right-[30%] hidden w-32 rotate-[7deg] sm:block">
+            <Photo form="print" media={{ url: "/house/photos/chapter-0/dorian-gray.webp", scene: "linen", alt: "" }} aspect="4 / 5" />
+          </div>
           <ul className="relative flex flex-wrap gap-x-12 gap-y-12">
             {desk.map((k, i) => (
               <motion.li key={k.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 + i * 0.12, duration: 1 }}>
@@ -204,6 +209,11 @@ function Reading({ item, onClose }: { item: KnowledgeView; onClose: () => void }
           <h2 className="mt-5 text-[2.4rem] font-light leading-[1.05] sm:text-[3rem]">{item.title}</h2>
           {item.author && <p className="mt-4 text-lg italic text-ink-soft">{item.author}</p>}
           <div className="mt-8 h-px w-16 bg-ink/25" />
+          {!sealed && item.spine.cover && (
+            <div className="on-surface mt-10 w-full max-w-sm rotate-[-1.5deg]">
+              <Photo form="print" develop media={{ url: item.spine.cover, scene: "linen", alt: item.title }} aspect="4 / 5" />
+            </div>
+          )}
           {sealed ? (
             <p className="mt-12 text-2xl italic leading-snug">{item.sealed_hint ?? "Tied with thread. Not yet."}</p>
           ) : (

@@ -15,7 +15,7 @@ export function Console({ children }: { children?: React.ReactNode }) {
           <Vase />
         </div>
         <div className="absolute bottom-3 left-[34%] w-24 rotate-[-3deg] sm:w-28" style={{ transformOrigin: "bottom" }}>
-          <Photo form="framed" media={{ url: "/house/photos/arch.webp", scene: "window", alt: "" }} aspect="4 / 5" />
+          <Photo form="framed" media={{ url: "/house/photos/chapter-0/morning-arch.webp", scene: "window", alt: "" }} aspect="4 / 5" />
         </div>
         <div className="absolute bottom-3 right-[8%] w-24 sm:w-28">
           <KeyDish />

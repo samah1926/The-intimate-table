@@ -31,6 +31,9 @@ const HENRY = "00000000-0000-4000-8000-00000000b004";
 const LARISSA = "00000000-0000-4000-8000-00000000b005";
 const PHIL = "00000000-0000-4000-8000-00000000b006";
 
+/** In the demo, "now" is ten days after Chapter 0. Hosts can preview any other moment. */
+export const DEMO_NOW = "2027-03-26T17:00:00Z";
+
 export const CH0 = "ch-0";
 export const CH01 = "ch-01";
 export const CH02 = "ch-02";
@@ -73,12 +76,12 @@ export const chapters: Chapter[] = [
     title: "Thirty",
     subtitle: "Before feeling ready",
     description:
-      "An evening about stepping in before the preparation is finished. A long table, eleven people, one question — and a road the next morning.",
-    location_label: "A house with a long table",
-    prelude_opens_at: "2026-08-22T09:00:00Z",
-    starts_at: "2026-09-12T17:30:00Z",
-    ends_at: "2026-09-13T10:00:00Z",
-    afterglow_at: "2026-09-14T07:00:00Z",
+      "Three days in Morocco about stepping in before the preparation is finished. A long table under the Atlas, eight people, one question — and a road the next morning.",
+    location_label: "Morocco",
+    prelude_opens_at: "2027-01-13T09:00:00Z",
+    starts_at: "2027-03-13T17:30:00Z",
+    ends_at: "2027-03-16T11:00:00Z",
+    afterglow_at: "2027-03-17T08:00:00Z",
     identity: { paper: "#efe9dd", ink: "#1c1a17", motif: "thread" },
     base_state: "open",
     sort: 0,
@@ -108,10 +111,10 @@ export const chapters: Chapter[] = [
     description:
       "A long road at dawn, a slow breakfast, and a conversation about effort. For people who move, and people who would like to.",
     location_label: "Somewhere with a long road at dawn",
-    prelude_opens_at: "2026-09-20T09:00:00Z",
-    starts_at: "2026-11-14T05:30:00Z",
-    ends_at: "2026-11-15T12:00:00Z",
-    afterglow_at: "2026-11-16T07:00:00Z",
+    prelude_opens_at: "2027-03-20T09:00:00Z",
+    starts_at: "2027-06-12T04:30:00Z",
+    ends_at: "2027-06-13T12:00:00Z",
+    afterglow_at: "2027-06-14T07:00:00Z",
     identity: { paper: "#ece6da", ink: "#2a221c", accent: "#8a5a3c", motif: "road" },
     base_state: "sealed",
     sort: 2,
@@ -166,8 +169,8 @@ export const invitations: Invitation[] = [
     message: "Come before you feel ready. That is the only condition.",
     status: "accepted",
     expires_at: null,
-    opened_at: "2026-08-22T18:02:00Z",
-    created_at: "2026-08-22T09:00:00Z",
+    opened_at: "2027-01-13T18:02:00Z",
+    created_at: "2027-01-13T09:00:00Z",
   },
   {
     id: "inv-02-lea",
@@ -178,7 +181,7 @@ export const invitations: Invitation[] = [
     status: "sent",
     expires_at: null,
     opened_at: null,
-    created_at: "2026-09-20T09:00:00Z",
+    created_at: "2027-03-20T09:00:00Z",
   },
   {
     id: "inv-02-omar",
@@ -189,7 +192,7 @@ export const invitations: Invitation[] = [
     status: "sent",
     expires_at: null,
     opened_at: null,
-    created_at: "2026-09-20T09:00:00Z",
+    created_at: "2027-03-20T09:00:00Z",
   },
 ];
 
@@ -201,7 +204,7 @@ export const preludes: Prelude[] = [
     title: "One question",
     body: "What would you do if being good at it wasn’t a requirement?",
     response_prompt: "Write it down. No one else will read it — not yet, not even you.",
-    opens_at: "2026-08-22T09:00:00Z",
+    opens_at: "2027-01-13T09:00:00Z",
     sort: 0,
   },
   {
@@ -211,7 +214,7 @@ export const preludes: Prelude[] = [
     title: "Something to bring",
     body: "Shoes you don’t mind ruining.",
     response_prompt: null,
-    opens_at: "2026-09-20T09:00:00Z",
+    opens_at: "2027-03-20T09:00:00Z",
     sort: 0,
   },
 ];
@@ -238,7 +241,23 @@ const photo = (id: string, file: string, scene: string, caption: string, alt: st
   owner_user_id: null,
 });
 
+/** Photographs from Chapter 0, by The Intimate Table. */
+const shot = (id: string, file: string, caption: string, alt: string): MediaAsset => ({
+  ...photo(id, `chapter-0/${file}`, "table", caption, alt),
+  credit: "The Intimate Table",
+});
+
 export const media: MediaAsset[] = [
+  shot("p-table-sunset", "table-sunset", "The table, an hour before.", "A long table on a terrace at sunset: linen, anthuriums, glasses, olive trees and the Atlas beyond"),
+  shot("p-table-anthurium", "table-anthurium", "Anthuriums and river stones, down the middle.", "The long table from its end, dark red anthuriums between the glasses"),
+  shot("p-envelope", "invitation-envelope", "It came in a burgundy envelope.", "A burgundy envelope with the ITT monogram; a card inside reads Chapter 0 — Thirty, Morocco, 13–16 March 2027"),
+  shot("p-ticket", "ticket", "13 March 2027, 18:30. The coordinates came a week later.", "A ticket for Chapter 0 — Thirty, Morocco, with a palm tree photograph and coordinates"),
+  shot("p-menu", "menu", "The menu, under an anthurium.", "A printed menu on linen: charred vegetables, sea bass, lamb, orange blossom"),
+  shot("p-welcome", "welcome", "On every bed.", "A card: Welcome to Morocco — New conversations. Familiar feelings."),
+  shot("p-bundle", "bundle", "Tied with string, the last morning.", "Photographs tied with twine and a tag: Chapter 0, Morocco, 13.03.27"),
+  shot("p-morning", "morning-arch", "The morning after, through the arch.", "A sheer curtain, an arched door onto a pool and an olive tree"),
+  shot("p-dorian", "dorian-gray", "Someone left it on the chair.", "A hand holding The Picture of Dorian Gray over a velvet armchair"),
+  shot("p-shelf", "library-shelf", "", "Hands taking a book from a shelf"),
   photo("m-table", "table-night", "table", "The table, a little after eleven.", "A long table from above after dinner: plates, glasses, candles burning down"),
   photo("m-candle", "candles", "candle", "Around eleven.", "Candlelight, out of focus"),
   photo("m-hands", "glasses", "hands", "The last glasses, around one.", "Wine glasses in candlelight, one still half full"),
@@ -259,7 +278,7 @@ const obj = (o: Partial<MemoryObject> & Pick<MemoryObject, "id" | "slug" | "kind
   sealed_hint: null,
   placement: {},
   sort: 0,
-  created_at: "2026-09-13T12:00:00Z",
+  created_at: "2027-03-16T12:00:00Z",
   ...o,
 });
 
@@ -314,8 +333,8 @@ export const objects: MemoryObject[] = [
     id: "obj-flower",
     slug: "a-small-flower",
     kind: "flower",
-    title: "A small flower",
-    caption: "From the middle of the table. Pressed the next morning.",
+    title: "An anthurium",
+    caption: "From the middle of the table. It has been drying ever since.",
     room_key: "memory",
     placement: { rotate: 62, x: 24, y: 79, w: 7, mx: 80, my: 70, mw: 15 },
     sort: 5,
@@ -324,12 +343,12 @@ export const objects: MemoryObject[] = [
     id: "obj-letter-to-self",
     slug: "a-letter-to-yourself",
     kind: "envelope",
-    label: "NOT BEFORE MARCH",
+    label: "NOT BEFORE SEPTEMBER",
     title: "A letter to yourself",
-    caption: "You wrote this in August, before the first Chapter. The House kept it sealed for six months.",
+    caption: "You wrote this in February, before the first Chapter. The House kept it sealed for six months.",
     room_key: "memory",
     base_state: "sealed",
-    sealed_hint: "Not before March.",
+    sealed_hint: "Not before September.",
     placement: { rotate: -2, x: 45, y: 76, w: 15, mx: 32, my: 79, mw: 40 },
     sort: 6,
   }),
@@ -364,7 +383,7 @@ export const objects: MemoryObject[] = [
     kind: "menu",
     label: "THIRTY",
     title: "A folded menu",
-    caption: "Five courses. The fourth one was improvised. Someone folded it and put it in a coat pocket.",
+    caption: "Four courses and an anthurium. Someone folded it and put it in a coat pocket.",
     room_key: "memory",
     placement: { rotate: 7, x: 65, y: 54, w: 11, mx: 72, my: 45, mw: 28 },
     sort: 1,
@@ -431,7 +450,7 @@ export const memories: Memory[] = [
     id: "mem-invitation",
     object_id: "obj-invitation",
     title: "Chapter 0 — Thirty",
-    occurred_at: "2026-08-22T09:00:00Z",
+    occurred_at: "2027-01-13T09:00:00Z",
     location_label: "It came to you",
     blocks: [
       {
@@ -439,22 +458,22 @@ export const memories: Memory[] = [
         text:
           "You are invited to the first table.\n\nThere is nothing to prepare. Come a little before you feel ready — that is the only condition. We will begin when everyone has sat down and nobody is quite sure what happens next.",
       },
-      { type: "quote", text: "Participation over preparation.", attribution: "printed on the back, very small" },
-      { type: "photos", media_ids: ["m-arch"] },
+      { type: "photos", media_ids: ["p-envelope", "p-ticket", "p-welcome"] },
+      { type: "quote", text: "New conversations. Familiar feelings.", attribution: "the card left on every bed" },
     ],
   },
   {
     id: "mem-photograph",
     object_id: "obj-photograph",
-    title: "The table, three times",
-    occurred_at: "2026-09-12T18:10:00Z",
-    location_label: "A house with a long table",
+    title: "The table, before and after",
+    occurred_at: "2027-03-13T22:41:00Z",
+    location_label: "Morocco, a house outside Marrakech",
     blocks: [
-      { type: "photos", media_ids: ["m-table", "m-candle", "m-hands", "m-linen"] },
+      { type: "photos", media_ids: ["p-table-sunset", "p-table-anthurium", "p-bundle"] },
       {
         type: "note",
         text:
-          "Nobody was looking at the camera, which is why these were kept. The candles were lit a little too early. The bread went round twice.",
+          "Nobody was looking at the camera, which is why these were kept. The candles were lit a little too early. The bread went round twice. The sun went behind the Atlas during the second course, and nobody noticed until it was gone.",
       },
     ],
   },
@@ -462,7 +481,7 @@ export const memories: Memory[] = [
     id: "mem-note",
     object_id: "obj-note",
     title: "Under your glass",
-    occurred_at: "2026-09-12T21:10:00Z",
+    occurred_at: "2027-03-13T21:10:00Z",
     location_label: "Seat six",
     blocks: [
       { type: "quote", text: "You came. That was the whole point. The rest we can learn at the table." },
@@ -476,7 +495,7 @@ export const memories: Memory[] = [
     id: "mem-record",
     object_id: "obj-record",
     title: "What was playing",
-    occurred_at: "2026-09-12T19:00:00Z",
+    occurred_at: "2027-03-13T19:00:00Z",
     location_label: null,
     blocks: [
       {
@@ -497,14 +516,14 @@ export const memories: Memory[] = [
     id: "mem-flower",
     object_id: "obj-flower",
     title: "From the middle of the table",
-    occurred_at: "2026-09-13T08:30:00Z",
+    occurred_at: "2027-03-14T08:30:00Z",
     location_label: null,
     blocks: [
-      { type: "photos", media_ids: ["m-window"] },
+      { type: "photos", media_ids: ["p-table-anthurium"] },
       {
         type: "note",
         text:
-          "Wild chamomile, mostly. Someone had picked it from the side of the road that afternoon. It was the only decoration, and nobody missed anything else.",
+          "Anthuriums, between river stones and glasses. They were chosen because they last. This one has been drying since the Sunday, and has kept its colour better than anyone expected.",
       },
     ],
   },
@@ -512,7 +531,7 @@ export const memories: Memory[] = [
     id: "mem-letter-to-self",
     object_id: "obj-letter-to-self",
     title: "What you wrote before",
-    occurred_at: "2026-08-30T00:00:00Z",
+    occurred_at: "2027-02-02T00:00:00Z",
     location_label: null,
     blocks: [
       { type: "journal", prompt: "What would you do if being good at it wasn’t a requirement?" },
@@ -527,7 +546,7 @@ export const memories: Memory[] = [
     id: "mem-key",
     object_id: "obj-key",
     title: "A key",
-    occurred_at: "2026-09-13T01:00:00Z",
+    occurred_at: "2027-03-16T01:00:00Z",
     location_label: null,
     blocks: [
       {
@@ -544,7 +563,7 @@ export const memories: Memory[] = [
     occurred_at: null,
     location_label: null,
     blocks: [
-      { type: "photos", media_ids: ["m-arch"] },
+      { type: "photos", media_ids: ["p-bundle", "p-morning"] },
       {
         type: "note",
         text:
@@ -555,25 +574,26 @@ export const memories: Memory[] = [
   {
     id: "mem-menu",
     object_id: "obj-menu",
-    title: "Thirty — the menu",
-    occurred_at: "2026-09-12T18:30:00Z",
-    location_label: "A house with a long table",
+    title: "Morocco, 13 March — the menu",
+    occurred_at: "2027-03-13T17:30:00Z",
+    location_label: "Morocco, a house outside Marrakech",
     blocks: [
       {
         type: "note",
         text:
-          "i. Bread, still warm. Salted butter. Radishes.\nii. Tomatoes, peach, torn basil, a lot of olive oil.\niii. Fish baked in salt, cracked at the table.\niv. Whatever was left, and it was very good.\nv. Fig leaf ice cream. Coffee. More conversation than planned.",
+          "Charred vegetables, olive and citrus.\nSea bass, herbs, lemon.\nLamb, slow cooked.\nOrange blossom, almond, honey.\n\nMint tea afterwards, on the terrace, until the candles gave up.",
       },
+      { type: "photos", media_ids: ["p-menu"] },
       {
         type: "recipe",
-        title: "Fish baked in salt",
+        title: "Lamb, slow cooked",
         serves: "for a long table",
-        ingredients: ["1 whole sea bream per two people", "2 kg coarse sea salt", "3 egg whites", "Lemon, fennel fronds, bay"],
+        ingredients: ["A shoulder of lamb", "Preserved lemon, green olives", "Ginger, saffron, cumin, a little cinnamon", "Onions, garlic, a bunch of coriander"],
         steps: [
-          "Fill the fish with lemon, fennel and bay.",
-          "Mix the salt with the egg whites until it feels like wet sand.",
-          "Bury the fish completely. Bake at 220°C for 25 minutes.",
-          "Bring it to the table whole and crack it open in front of everyone. This is the point.",
+          "Rub the lamb with the spices the night before.",
+          "Soften the onions and garlic, lay the lamb on top, add a glass of water.",
+          "Cover and leave it on the lowest heat for five hours. Do not hurry it.",
+          "Add the lemon and olives for the last half hour. Bring the pot to the table and let people help themselves.",
         ],
       },
       { type: "people", from_chapter: true },
@@ -583,7 +603,7 @@ export const memories: Memory[] = [
     id: "mem-place-card",
     object_id: "obj-place-card-lea",
     title: "Seat six",
-    occurred_at: "2026-09-12T18:30:00Z",
+    occurred_at: "2027-03-13T17:30:00Z",
     location_label: null,
     blocks: [
       {
@@ -597,7 +617,7 @@ export const memories: Memory[] = [
     id: "mem-fragment",
     object_id: "obj-fragment",
     title: "Overheard, around eleven",
-    occurred_at: "2026-09-12T21:04:00Z",
+    occurred_at: "2027-03-13T22:04:00Z",
     location_label: null,
     blocks: [
       {
@@ -616,8 +636,8 @@ export const memories: Memory[] = [
     id: "mem-shoes",
     object_id: "obj-shoes",
     title: "The morning run",
-    occurred_at: "2026-09-13T04:12:00Z",
-    location_label: "The road behind the house",
+    occurred_at: "2027-03-14T05:12:00Z",
+    location_label: "The road through the olive groves",
     blocks: [
       {
         type: "route",
@@ -655,7 +675,7 @@ export const memories: Memory[] = [
     id: "mem-mat",
     object_id: "obj-mat",
     title: "Mobility, before breakfast",
-    occurred_at: "2026-09-13T06:00:00Z",
+    occurred_at: "2027-03-14T07:00:00Z",
     location_label: "The terrace",
     blocks: [
       {
@@ -666,14 +686,14 @@ export const memories: Memory[] = [
         type: "learned",
         text: "Range of motion you don’t use, you lose. Twenty minutes, most mornings, is a better deal than an hour once a week.",
       },
-      { type: "photos", media_ids: ["m-arch"] },
+      { type: "photos", media_ids: ["p-morning"] },
     ],
   },
   {
     id: "mem-bowl",
     object_id: "obj-bowl",
     title: "A recovery ritual",
-    occurred_at: "2026-09-13T08:00:00Z",
+    occurred_at: "2027-03-14T09:00:00Z",
     location_label: null,
     blocks: [
       {
@@ -698,7 +718,7 @@ const book = (k: Partial<KnowledgeItem> & Pick<KnowledgeItem, "id" | "slug" | "k
   sealed_hint: null,
   spine: {},
   sort: 0,
-  created_at: "2026-08-20T09:00:00Z",
+  created_at: "2027-01-10T09:00:00Z",
   ...k,
 });
 
@@ -742,7 +762,7 @@ export const knowledge: KnowledgeItem[] = [
     body:
       "— Light the candles before anyone arrives, so nobody watches it happen.\n— Seat people next to someone they wouldn’t have chosen. Then hope.\n— One question for the whole table, asked only once.\n— Serve something that has to be broken open in front of everyone.\n— Don’t explain the evening. It will explain itself, or it won’t, and both are fine.\n— Nobody should leave with nothing. Nobody should leave with a gift bag.",
     chapter_id: CH0,
-    spine: { height: 78, tone: "linen" },
+    spine: { height: 78, tone: "linen", cover: "/house/photos/chapter-0/library-book.webp" },
     sort: 3,
   }),
   book({
@@ -781,7 +801,7 @@ const letter = (e: Partial<HouseEvent> & Pick<HouseEvent, "id" | "kind" | "body"
   base_state: "open",
   starts_at: null,
   ends_at: null,
-  created_at: "2026-08-20T09:00:00Z",
+  created_at: "2027-01-10T09:00:00Z",
   ...e,
 });
 
@@ -792,7 +812,7 @@ export const events: HouseEvent[] = [
     body:
       "Dear {first_name},\n\nThis house is new. Most of its rooms are still empty, and that is how it should be. Nothing here is put on display — things arrive only once they have been lived.\n\nWalk around. Open what opens. Leave what doesn’t.\n\nWe’ll keep a light on.",
     signature: "— The House",
-    starts_at: "2026-08-20T09:00:00Z",
+    starts_at: "2027-01-10T09:00:00Z",
   }),
   letter({
     id: "ev-afterglow-0",
@@ -800,24 +820,24 @@ export const events: HouseEvent[] = [
     chapter_id: CH0,
     base_state: "absent",
     body:
-      "{first_name},\n\nThe table has been cleared, but not everything was taken away. Some of Saturday is in the Memory Room now. A pair of shoes is drying in the Studio.\n\nThere is no need to look at any of it today. It will still be here.",
+      "{first_name},\n\nThe table has been cleared, but not everything was taken away. Some of the weekend is in the Memory Room now. A pair of shoes is drying in the Studio.\n\nThere is no need to look at any of it today. It will still be here.",
     signature: "— The House, the morning after",
-    starts_at: "2026-09-14T07:00:00Z",
+    starts_at: "2027-03-17T08:00:00Z",
   }),
   letter({
     id: "ev-clue-02",
     kind: "clue",
     chapter_id: CH02,
-    body: "31.6° N —",
+    body: "31.0° N —",
     title: "Found on the console",
     signature: "the rest when you need it",
-    starts_at: "2026-09-22T09:00:00Z",
+    starts_at: "2027-03-22T09:00:00Z",
   }),
   letter({
-    id: "ev-autumn",
+    id: "ev-spring",
     kind: "seasonal",
     base_state: "absent",
-    body: "The light comes in lower now. The Library is warmest in the late afternoon.",
+    body: "The orange trees are in flower. The Library is brightest in the morning.",
   }),
   letter({
     id: "ev-door",
@@ -826,7 +846,7 @@ export const events: HouseEvent[] = [
     chapter_id: CH02,
     title: "The night before the road",
     body:
-      "You have sat at one table. There is another, smaller one, before Motion — six people, the night before the road. It is not on any list.\n\nThere is nothing to prepare. Eat early. Sleep early. We will knock.\n\n31.6295° N, 7.9811° W · Friday · 19:30",
+      "You have sat at one table. There is another, smaller one, before Motion — six people, the night before the road. It is not on any list.\n\nThere is nothing to prepare. Eat early. Sleep early. We will knock.\n\n31.0587° N, 7.9154° W · Friday · 19:30",
     signature: "— for those who kept the key",
   }),
 ];
@@ -911,12 +931,12 @@ export const rules: UnlockRule[] = [
     conditions: { type: "attended_chapter", chapter_id: CH0 },
   }),
   rule({
-    id: "rule-autumn",
-    name: "Autumn light",
+    id: "rule-spring",
+    name: "Spring light",
     target_type: "house_event",
-    target_id: "ev-autumn",
+    target_id: "ev-spring",
     effect: "open",
-    conditions: { type: "season", months: [9, 10, 11] },
+    conditions: { type: "season", months: [3, 4, 5] },
   }),
 ];
 
@@ -924,7 +944,7 @@ export const unlocks: UserUnlock[] = [];
 
 export const connections: PeopleConnection[] = [
   // Jakub has already asked to find Léa again. Léa can't see this until she asks too.
-  { id: "con-jakub-lea", from_user: JAKUB, to_user: LEA, chapter_id: CH0, created_at: "2026-09-15T20:00:00Z" },
+  { id: "con-jakub-lea", from_user: JAKUB, to_user: LEA, chapter_id: CH0, created_at: "2027-03-18T20:00:00Z" },
 ];
 
 export const journal: JournalEntry[] = [
@@ -938,10 +958,10 @@ export const journal: JournalEntry[] = [
     body:
       "Sing. Badly, and in front of people.\n\nStop rehearsing the conversation with my father and actually have it.\n\nRun somewhere I’ve never been, slowly, with strangers.",
     sealed_until: null,
-    created_at: "2026-08-30T21:40:00Z",
+    created_at: "2027-02-02T21:40:00Z",
   },
 ];
 
 export const interactions: Interaction[] = [
-  { id: "int-lea-glass", user_id: LEA, kind: "scan", ref: "under-your-glass", created_at: "2026-09-12T21:10:00Z" },
+  { id: "int-lea-glass", user_id: LEA, kind: "scan", ref: "under-your-glass", created_at: "2027-03-13T21:10:00Z" },
 ];
