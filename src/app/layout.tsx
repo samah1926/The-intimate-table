@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Courier_Prime, Instrument_Sans, Mrs_Saint_Delafield } from "next/font/google";
+import { Cormorant_Garamond, Instrument_Sans } from "next/font/google";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -16,20 +16,6 @@ const instrument = Instrument_Sans({
   display: "swap",
 });
 
-const courier = Courier_Prime({
-  variable: "--font-courier",
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  display: "swap",
-});
-
-const hand = Mrs_Saint_Delafield({
-  variable: "--font-hand-script",
-  subsets: ["latin"],
-  weight: "400",
-  display: "swap",
-});
-
 export const metadata: Metadata = {
   title: {
     default: "The House — The Intimate Table",
@@ -41,7 +27,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#17110d",
+  themeColor: "#15100d",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -49,7 +35,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${instrument.variable} ${courier.variable} ${hand.variable}`}>
+    <html lang="en" className={`${cormorant.variable} ${instrument.variable}`}>
       <body className="min-h-dvh">{children}</body>
     </html>
   );

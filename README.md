@@ -45,17 +45,15 @@ Demo edits live in memory and reset when the server restarts.
    `host@the-house.test` for the back office. Use real addresses for real guests.
    Only people who already exist can ask for a key: the House is by invitation.
 
-## Imagery and materials
+## Imagery
 
-Photographs of Chapter 0 live in `public/house/photos/chapter-0/`. The remaining
-placeholder photographs, room plates and textures in `public/house/` are rendered
-by `scripts/darkroom/`:
+The House is photographic: every room opens on one real photograph of Chapter 0,
+kept in `public/house/photos/chapter-0/`. Nothing is drawn. The only generated
+image is the faint paper grain laid over every page:
 
 ```bash
 pip install numpy pillow scipy
-python3 scripts/darkroom/textures.py   # paper, linen, plaster, walnut, stone, terracotta, zellige
-python3 scripts/darkroom/plates.py     # the light of each room, leaf shadows
-python3 scripts/darkroom/photos.py     # film-like placeholder photographs
+python3 scripts/darkroom/paper.py
 ```
 
 To use real photography, upload it and set `url` on the media asset (back

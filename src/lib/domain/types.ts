@@ -169,7 +169,8 @@ export type MemoryBlock =
   | { type: "recipe"; title: string; serves?: string; ingredients: string[]; steps: string[] }
   | { type: "route"; label: string; distance?: string; points: [number, number][] }
   | { type: "audio"; media_id: string; caption?: string }
-  | { type: "journal"; prompt: string };
+  | { type: "journal"; prompt: string }
+  | { type: "schedule"; title?: string; days: { day: string; items: [string, string][] }[] };
 
 export interface Memory {
   id: string;

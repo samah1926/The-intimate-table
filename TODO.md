@@ -61,10 +61,22 @@ Legend: `[x]` done · `[ ]` open · `[~]` in progress
 - [x] ITT monogram, burgundy envelope, ticket-style invitation with a stub
 - [x] Demo "present" fixed ten days after Chapter 0 (hosts can switch to real time in Preview)
 
+## Milestone 9 — Elevated: an editorial house
+- [x] One serif family, ivory palette, oxblood for the single primary action
+- [x] Every room opens on one real photograph and one idea (`RoomOpening`)
+- [x] Memory Room: one memory brought forward, everything else as an index; opened memory as a quiet page
+- [x] Table: overheard line, "The table" (breakfast / lunch / dinner), seating list, what was left
+- [x] Library as a table of contents; reading page with cover
+- [x] Studio as a running order of mornings
+- [x] Entrance: dusk, the calla, one sentence, "Enter"; Unmarked Door set in serif
+- [x] The plan as a contents page
+- [x] Removed all drawn objects, procedural photographs, room plates and textures (paper grain kept)
+- [x] Chapter 0 dates aligned with the programme: 12 — 15 March 2027, with the itinerary in the invitation
+
 ## Next
 - [ ] Try it against a real Supabase project (schema, seed, magic link) — built, not yet run against one
 - [ ] Signed URLs for media in the private `house` bucket, and uploads from the admin
-- [ ] Real photography for the run, the Studio and the late-night table (still procedural placeholders)
+- [ ] Photography for the Studio (run, yoga, pool) at full resolution — today a small crop of the collage
 - [ ] Real ambient recordings per room (`public/house/sound/`)
 - [ ] Decide whether the running shoes live in the Studio (today) or the Memory Room (one field in the admin)
 - [ ] Mark an invitation "opened" when its envelope is untied (today: remembered in the browser only)

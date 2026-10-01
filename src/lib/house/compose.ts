@@ -140,8 +140,21 @@ export interface ContentsLine {
   current: boolean;
 }
 
+export interface FeaturedChapter {
+  id: string;
+  number: string;
+  title: string | null;
+  subtitle: string | null;
+  location_label: string | null;
+  starts_at: string | null;
+  ends_at: string | null;
+  lived: boolean;
+}
+
 export interface HouseView {
   now: string;
+  /** The Chapter the House is about right now: the last one lived, or the next one. */
+  chapter: FeaturedChapter | null;
   viewer: { id: string; first_name: string; role: Profile["role"] };
   hasLived: boolean;
   rooms: RoomView[];
@@ -329,8 +342,25 @@ export function composeHouse(world: World, now: Date): HouseView {
       };
     });
 
+  const latestLived = [...lived].sort((a, b) => +new Date(b.starts_at ?? 0) - +new Date(a.starts_at ?? 0))[0];
+  const nextUp = moments.find((m) => m.phase === "prelude" || m.phase === "during");
+  const featuredSrc = latestLived ?? (nextUp ? world.chapters.find((c) => c.id === nextUp.chapter.id) : undefined);
+  const chapter: FeaturedChapter | null = featuredSrc
+    ? {
+        id: featuredSrc.id,
+        number: featuredSrc.number,
+        title: featuredSrc.title,
+        subtitle: featuredSrc.subtitle,
+        location_label: featuredSrc.location_label,
+        starts_at: featuredSrc.starts_at,
+        ends_at: featuredSrc.ends_at,
+        lived: !!latestLived,
+      }
+    : null;
+
   return {
     now: now.toISOString(),
+    chapter,
     viewer: { id: viewer.id, first_name: viewer.first_name, role: viewer.role },
     hasLived: lived.length > 0,
     rooms,

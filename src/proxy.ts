@@ -8,6 +8,9 @@ const configured = () =>
   Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY && process.env.SUPABASE_SERVICE_ROLE_KEY);
 
 export async function proxy(request: NextRequest) {
+  // The House's photographs live under /house/ too; the entrance needs them.
+  if (/\.\w+$/.test(request.nextUrl.pathname)) return NextResponse.next();
+
   let response = NextResponse.next({ request });
 
   if (!configured()) {

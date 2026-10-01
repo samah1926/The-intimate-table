@@ -14,7 +14,6 @@ export function SoundToggle({ room }: { room: RoomKey }) {
   const master = useRef<GainNode | null>(null);
   const current = useRef<RoomSound | null>(null);
 
-  // Cross-fade when walking into another room.
   useEffect(() => {
     if (!on || !ctx.current || !master.current) return;
     const next = new RoomSound(ctx.current, AMBIENCE[room], master.current);
@@ -49,33 +48,8 @@ export function SoundToggle({ room }: { room: RoomKey }) {
   };
 
   return (
-    <button
-      type="button"
-      onClick={toggle}
-      aria-pressed={on}
-      className="label pointer-events-auto flex items-center gap-2.5 opacity-60 transition-opacity duration-500 hover:opacity-100"
-    >
-      <svg width="18" height="12" viewBox="0 0 18 12" aria-hidden>
-        {[0.5, 0.9, 0.65, 1, 0.55].map((h, i) => (
-          <rect
-            key={i}
-            x={i * 3.8}
-            y={0}
-            width="1.2"
-            height="12"
-            rx="0.6"
-            fill="currentColor"
-            style={{
-              transformBox: "fill-box",
-              transformOrigin: "center",
-              transform: `scaleY(${on ? h : 0.14})`,
-              transition: "transform 900ms cubic-bezier(.22,.61,.24,1)",
-            }}
-          />
-        ))}
-      </svg>
-      <span className="hidden sm:inline">{on ? "Sound on" : "Sound off"}</span>
-      <span className="sr-only sm:hidden">{on ? "Sound on" : "Sound off"}</span>
+    <button type="button" onClick={toggle} aria-pressed={on} className="meta text-[0.62rem] muted transition-opacity hover:opacity-60">
+      {on ? "Sound — on" : "Sound — off"}
     </button>
   );
 }

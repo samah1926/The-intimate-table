@@ -4,10 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
+import { leave } from "@/app/actions";
+import { Wordmark } from "@/components/ui/Wordmark";
 import type { RoomView } from "@/lib/house/compose";
 import { applyLight } from "@/lib/house/apply-light";
 import { LIGHT, roomFromPath } from "@/lib/house/light";
-import { Atmosphere } from "./Atmosphere";
 import { Plan } from "./Plan";
 import { SoundToggle } from "./SoundToggle";
 
@@ -15,71 +16,72 @@ const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayout
 
 interface Props {
   rooms: RoomView[];
+  /** e.g. ["Chapter 0", "Morocco", "12 — 15 March 2027"] */
+  context: string[];
   preview: { clock: string | null; viewAs: string | null } | null;
   isHost: boolean;
   children: React.ReactNode;
 }
 
-export function HouseShell({ rooms, preview, isHost, children }: Props) {
+/**
+ * The frame of every room: the wordmark, where you are in time, the plan.
+ * Nothing floats over the photography; the header scrolls away with the page.
+ */
+export function HouseShell({ rooms, context, preview, isHost, children }: Props) {
   const pathname = usePathname();
   const room = roomFromPath(pathname);
   const [planOpen, setPlanOpen] = useState(false);
+  const dark = LIGHT[room].tone === "dark";
 
-  // The light changes as you walk from room to room.
   useIsoLayoutEffect(() => applyLight(LIGHT[room]), [room]);
 
   return (
     <div className="relative min-h-dvh">
-      <Atmosphere room={room} />
       <div className="grain" aria-hidden />
 
-      <header className="pointer-events-none fixed inset-x-0 top-0 z-40 flex items-start justify-between px-5 pt-[max(1.25rem,env(safe-area-inset-top))] sm:px-10 sm:pt-8">
-        <Link href="/house" className="pointer-events-auto text-[1.05rem] italic opacity-80 transition-opacity duration-500 hover:opacity-100">
-          The House
+      <header className="relative z-30 mx-auto flex max-w-[84rem] items-start justify-between gap-6 px-6 pt-[max(1.75rem,env(safe-area-inset-top))] sm:px-10 sm:pt-9 lg:px-14">
+        <Link href="/house" aria-label="The House — the Hall" className="transition-opacity duration-500 hover:opacity-70">
+          <Wordmark size="1.08rem" />
         </Link>
-        <button
-          type="button"
-          onClick={() => setPlanOpen(true)}
-          className="label pointer-events-auto flex items-center gap-3 opacity-75 transition-opacity duration-500 hover:opacity-100"
-          aria-haspopup="dialog"
-          aria-label="The plan"
-        >
-          <PlanGlyph />
-          <span className="hidden sm:inline">The plan</span>
-        </button>
+        <div className="flex items-start gap-10">
+          {context.length > 0 && (
+            <p className={`meta hidden text-[0.66rem] leading-[1.9] sm:block ${dark ? "text-[#a39684]" : "text-ink-soft"}`}>
+              {context.map((c) => (
+                <span key={c} className="block">
+                  {c}
+                </span>
+              ))}
+            </p>
+          )}
+          <button type="button" onClick={() => setPlanOpen(true)} aria-haspopup="dialog" className="eyebrow flex items-center gap-3 pt-0.5 transition-opacity hover:opacity-60">
+            The plan
+            <span aria-hidden className="text-[0.9rem] tracking-normal">→</span>
+          </button>
+        </div>
       </header>
 
       <main className="relative z-10">{children}</main>
 
-      <div className="pointer-events-none fixed bottom-0 left-0 z-40 px-5 pb-[max(1.1rem,env(safe-area-inset-bottom))] sm:px-10 sm:pb-7">
-        <SoundToggle room={room} />
-      </div>
+      <footer className="relative z-10 mx-auto mt-28 flex max-w-[84rem] flex-wrap items-center justify-between gap-6 border-t px-6 py-8 hairline sm:px-10 lg:px-14">
+        <p className="meta text-[0.62rem] muted">The Intimate Table — The House</p>
+        <div className="flex items-center gap-8">
+          <SoundToggle room={room} />
+          <form action={leave}>
+            <button className="meta text-[0.62rem] muted transition-opacity hover:opacity-60">Leave</button>
+          </form>
+        </div>
+      </footer>
 
       {preview && (
-        <div className="label fixed bottom-0 left-1/2 z-40 -translate-x-1/2 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-          <Link
-            href="/admin"
-            className="block whitespace-nowrap rounded-full border border-current/20 bg-[var(--room-bg)]/70 px-4 py-1.5 opacity-70 backdrop-blur transition-opacity hover:opacity-100"
-          >
+        <div className="fixed bottom-0 left-1/2 z-40 -translate-x-1/2 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+          <Link href="/admin" className="meta block whitespace-nowrap bg-ink/85 px-4 py-2 text-[0.6rem] text-ivory backdrop-blur transition-opacity hover:opacity-80">
             Preview{preview.clock ? ` · ${preview.clock}` : ""}
-            {preview.viewAs ? ` · as ${preview.viewAs}` : ""} — change
+            {preview.viewAs ? ` · as ${preview.viewAs}` : ""}
           </Link>
         </div>
       )}
 
-      <AnimatePresence>
-        {planOpen && <Plan rooms={rooms} current={room} isHost={isHost} onClose={() => setPlanOpen(false)} />}
-      </AnimatePresence>
+      <AnimatePresence>{planOpen && <Plan rooms={rooms} current={room} isHost={isHost} onClose={() => setPlanOpen(false)} />}</AnimatePresence>
     </div>
-  );
-}
-
-/** A folded floor plan. */
-function PlanGlyph() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1" aria-hidden>
-      <path d="M1.5 3.5 6.5 1.5l5 2 5-2v13l-5 2-5-2-5 2z" />
-      <path d="M6.5 1.5v13M11.5 3.5v13" opacity=".6" />
-    </svg>
   );
 }

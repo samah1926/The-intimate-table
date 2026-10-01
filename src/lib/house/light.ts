@@ -11,23 +11,20 @@ export interface RoomLight {
 }
 
 /**
- * Each room is defined by its light, not by a colour scheme.
- * Darkness is always warm and always has a source: never flat black.
+ * One calm canvas for the whole House — ivory, ink, oxblood — so photography
+ * can carry the emotion. Only the threshold and the unmarked door are dark.
  */
+const IVORY: RoomLight = { bg: "#f5f0e8", ink: "#1d1814", muted: "#7d7165", rule: "#1d181424", glow: "#fff6e6", tone: "light", grain: 0.035 };
+const NIGHT: RoomLight = { bg: "#15100d", ink: "#efe7db", muted: "#a39684", rule: "#efe7db1f", glow: "#f2dcb4", tone: "dark", grain: 0.05 };
+
 export const LIGHT: Record<RoomKey | "threshold", RoomLight> = {
-  // Late afternoon: sun through an arched window, palm shadows on plaster.
-  hall: { bg: "#d8c6ad", ink: "#2a2118", muted: "#6f604f", rule: "#2a211826", glow: "#ffe3b3", tone: "light", grain: 0.07 },
-  // Night: candles burning down over an oiled walnut table.
-  table: { bg: "#1f160f", ink: "#f1e6d6", muted: "#b09d88", rule: "#f1e6d61f", glow: "#ffc27a", tone: "dark", grain: 0.06 },
-  // Soft daylight on sage plaster. Quiet.
-  library: { bg: "#c9c9b9", ink: "#23261f", muted: "#5d6255", rule: "#23261f22", glow: "#fbfbef", tone: "light", grain: 0.06 },
-  // Early morning: long beams across limestone.
-  studio: { bg: "#d9d7d0", ink: "#22211e", muted: "#65635b", rule: "#22211e22", glow: "#fffaf0", tone: "light", grain: 0.06 },
-  // One warm lamp over a walnut surface; dust in the light.
-  memory: { bg: "#2a1f18", ink: "#f0e5d4", muted: "#b19d86", rule: "#f0e5d41c", glow: "#ffd9a3", tone: "dark", grain: 0.055 },
-  // Almost dark, but warm: light comes from behind the door.
-  door: { bg: "#120d0a", ink: "#ece2d2", muted: "#9a8b79", rule: "#ece2d21a", glow: "#f5dcae", tone: "dark", grain: 0.05 },
-  threshold: { bg: "#17110d", ink: "#ece2d2", muted: "#9a8b79", rule: "#ece2d21a", glow: "#f5d9a6", tone: "dark", grain: 0.055 },
+  hall: IVORY,
+  table: IVORY,
+  library: IVORY,
+  studio: IVORY,
+  memory: IVORY,
+  door: NIGHT,
+  threshold: NIGHT,
 };
 
 export function roomFromPath(pathname: string): RoomKey {
@@ -62,4 +59,25 @@ export function houseDate(now: Date | string, timeZone = "Europe/Paris") {
 export function shortDate(iso: string | null, timeZone = "Europe/Paris") {
   if (!iso) return null;
   return new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone }).format(new Date(iso));
+}
+
+/** "12 — 15 March 2027" */
+export function dateRange(start: string | null, end: string | null, timeZone = "Europe/Paris") {
+  if (!start) return null;
+  const s = new Date(start);
+  const e = end ? new Date(end) : null;
+  const day = (d: Date) => new Intl.DateTimeFormat("en-GB", { day: "numeric", timeZone }).format(d);
+  const full = (d: Date) => new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone }).format(d);
+  if (!e || day(s) === day(e)) return full(s);
+  const sameMonth = new Intl.DateTimeFormat("en-GB", { month: "numeric", timeZone }).format(s) === new Intl.DateTimeFormat("en-GB", { month: "numeric", timeZone }).format(e);
+  return sameMonth ? `${day(s)} — ${full(e)}` : `${full(s)} — ${full(e)}`;
+}
+
+/** "13 March 2027 — 23:41" */
+export function dateTime(iso: string | null, timeZone = "Europe/Paris") {
+  if (!iso) return null;
+  const d = new Date(iso);
+  const date = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone }).format(d);
+  const time = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone }).format(d);
+  return `${date} — ${time}`;
 }

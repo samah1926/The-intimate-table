@@ -74,14 +74,14 @@ export const chapters: Chapter[] = [
     slug: "thirty",
     number: "0",
     title: "Thirty",
-    subtitle: "Before feeling ready",
+    subtitle: "A gathering for those who value a fuller life",
     description:
-      "Three days in Morocco about stepping in before the preparation is finished. A long table under the Atlas, eight people, one question — and a road the next morning.",
+      "A few days to reset, to move, to eat well, to be together. Four days in Morocco about stepping in before you feel ready — a long table under the Atlas, eight people, one question.",
     location_label: "Morocco",
     prelude_opens_at: "2027-01-13T09:00:00Z",
-    starts_at: "2027-03-13T17:30:00Z",
-    ends_at: "2027-03-16T11:00:00Z",
-    afterglow_at: "2027-03-17T08:00:00Z",
+    starts_at: "2027-03-12T15:00:00Z",
+    ends_at: "2027-03-15T09:00:00Z",
+    afterglow_at: "2027-03-16T08:00:00Z",
     identity: { paper: "#efe9dd", ink: "#1c1a17", motif: "thread" },
     base_state: "open",
     sort: 0,
@@ -251,22 +251,15 @@ export const media: MediaAsset[] = [
   shot("p-table-sunset", "table-sunset", "The table, an hour before.", "A long table on a terrace at sunset: linen, anthuriums, glasses, olive trees and the Atlas beyond"),
   shot("p-table-anthurium", "table-anthurium", "Anthuriums and river stones, down the middle.", "The long table from its end, dark red anthuriums between the glasses"),
   shot("p-envelope", "invitation-envelope", "It came in a burgundy envelope.", "A burgundy envelope with the ITT monogram; a card inside reads Chapter 0 — Thirty, Morocco, 13–16 March 2027"),
-  shot("p-ticket", "ticket", "13 March 2027, 18:30. The coordinates came a week later.", "A ticket for Chapter 0 — Thirty, Morocco, with a palm tree photograph and coordinates"),
+  shot("p-ticket", "ticket", "The ticket for Friday’s dinner. The coordinates came a week later.", "A ticket for Chapter 0 — Thirty, Morocco, with a palm tree photograph and coordinates"),
   shot("p-menu", "menu", "The menu, under an anthurium.", "A printed menu on linen: charred vegetables, sea bass, lamb, orange blossom"),
   shot("p-welcome", "welcome", "On every bed.", "A card: Welcome to Morocco — New conversations. Familiar feelings."),
   shot("p-bundle", "bundle", "Tied with string, the last morning.", "Photographs tied with twine and a tag: Chapter 0, Morocco, 13.03.27"),
   shot("p-morning", "morning-arch", "The morning after, through the arch.", "A sheer curtain, an arched door onto a pool and an olive tree"),
   shot("p-dorian", "dorian-gray", "Someone left it on the chair.", "A hand holding The Picture of Dorian Gray over a velvet armchair"),
   shot("p-shelf", "library-shelf", "", "Hands taking a book from a shelf"),
-  photo("m-table", "table-night", "table", "The table, a little after eleven.", "A long table from above after dinner: plates, glasses, candles burning down"),
-  photo("m-candle", "candles", "candle", "Around eleven.", "Candlelight, out of focus"),
-  photo("m-hands", "glasses", "hands", "The last glasses, around one.", "Wine glasses in candlelight, one still half full"),
-  photo("m-road", "road-dawn", "road", "6:12. The road still blue.", "An empty road at first light, three runners far away"),
-  photo("m-dawn", "sea-dawn", "dawn", "Kilometre four. Nobody talking.", "The sea at sunrise"),
-  photo("m-window", "window-linen", "window", "The morning after.", "Morning light through a window onto crumpled linen"),
-  photo("m-linen", "linen-burgundy", "linen", "Someone’s napkin, left on the tiles.", "A burgundy linen napkin on green zellige, palm shadows"),
-  photo("m-tea", "tea", "linen", "Mint tea, before anyone went to bed.", "A brass tray from above with a teapot and two glasses of mint tea"),
-  photo("m-arch", "arch", "window", "The courtyard, from the door.", "A plaster arch opening onto a garden, palm shadows on the wall"),
+  shot("p-house", "house-arch", "The dining room, the last evening.", "A dark wooden table under a lantern, an arched opening onto olive trees and the Atlas"),
+  shot("p-calla", "calla", "Kept on the windowsill since.", "A single calla lily in soft light"),
 ];
 
 const obj = (o: Partial<MemoryObject> & Pick<MemoryObject, "id" | "slug" | "kind" | "title" | "room_key">): MemoryObject => ({
@@ -278,7 +271,7 @@ const obj = (o: Partial<MemoryObject> & Pick<MemoryObject, "id" | "slug" | "kind
   sealed_hint: null,
   placement: {},
   sort: 0,
-  created_at: "2027-03-16T12:00:00Z",
+  created_at: "2027-03-15T12:00:00Z",
   ...o,
 });
 
@@ -333,8 +326,8 @@ export const objects: MemoryObject[] = [
     id: "obj-flower",
     slug: "a-small-flower",
     kind: "flower",
-    title: "An anthurium",
-    caption: "From the middle of the table. It has been drying ever since.",
+    title: "A calla lily",
+    caption: "Someone took one home from the house. It has been drying on the windowsill since.",
     room_key: "memory",
     placement: { rotate: 62, x: 24, y: 79, w: 7, mx: 80, my: 70, mw: 15 },
     sort: 5,
@@ -459,21 +452,31 @@ export const memories: Memory[] = [
           "You are invited to the first table.\n\nThere is nothing to prepare. Come a little before you feel ready — that is the only condition. We will begin when everyone has sat down and nobody is quite sure what happens next.",
       },
       { type: "photos", media_ids: ["p-envelope", "p-ticket", "p-welcome"] },
-      { type: "quote", text: "New conversations. Familiar feelings.", attribution: "the card left on every bed" },
+      {
+        type: "schedule",
+        title: "Itinerary",
+        days: [
+          { day: "Thursday 12", items: [["16:00", "Arrival & settle in"], ["18:00", "Welcome circle"], ["20:00", "Dinner"]] },
+          { day: "Friday 13", items: [["07:00", "Morning run"], ["09:00", "Breakfast"], ["11:00", "Wellness session"], ["17:00", "Free time"], ["20:00", "Dinner at the house"]] },
+          { day: "Saturday 14", items: [["08:00", "Movement & breathwork"], ["11:00", "Brunch"], ["16:30", "Tea & conversation"], ["20:00", "Dinner under the stars"]] },
+          { day: "Sunday 15", items: [["08:00", "Optional run / walk"], ["10:00", "Closing & departures"]] },
+        ],
+      },
+      { type: "quote", text: "Same people, a different pace.", attribution: "the postcard in every room" },
     ],
   },
   {
     id: "mem-photograph",
     object_id: "obj-photograph",
-    title: "The table, before and after",
-    occurred_at: "2027-03-13T22:41:00Z",
+    title: "The table, three times",
+    occurred_at: "2027-03-12T18:30:00Z",
     location_label: "Morocco, a house outside Marrakech",
     blocks: [
       { type: "photos", media_ids: ["p-table-sunset", "p-table-anthurium", "p-bundle"] },
       {
         type: "note",
         text:
-          "Nobody was looking at the camera, which is why these were kept. The candles were lit a little too early. The bread went round twice. The sun went behind the Atlas during the second course, and nobody noticed until it was gone.",
+          "Three conversations, one table. Strangers at first, a little braver by dessert, and somewhere between the tagine and the last glass, we felt like old friends.",
       },
     ],
   },
@@ -481,7 +484,7 @@ export const memories: Memory[] = [
     id: "mem-note",
     object_id: "obj-note",
     title: "Under your glass",
-    occurred_at: "2027-03-13T21:10:00Z",
+    occurred_at: "2027-03-12T21:10:00Z",
     location_label: "Seat six",
     blocks: [
       { type: "quote", text: "You came. That was the whole point. The rest we can learn at the table." },
@@ -495,7 +498,7 @@ export const memories: Memory[] = [
     id: "mem-record",
     object_id: "obj-record",
     title: "What was playing",
-    occurred_at: "2027-03-13T19:00:00Z",
+    occurred_at: "2027-03-12T19:00:00Z",
     location_label: null,
     blocks: [
       {
@@ -516,14 +519,14 @@ export const memories: Memory[] = [
     id: "mem-flower",
     object_id: "obj-flower",
     title: "From the middle of the table",
-    occurred_at: "2027-03-14T08:30:00Z",
+    occurred_at: "2027-03-15T07:30:00Z",
     location_label: null,
     blocks: [
-      { type: "photos", media_ids: ["p-table-anthurium"] },
+      { type: "photos", media_ids: ["p-calla"] },
       {
         type: "note",
         text:
-          "Anthuriums, between river stones and glasses. They were chosen because they last. This one has been drying since the Sunday, and has kept its colour better than anyone expected.",
+          "There were anthuriums on the table and callas in the hall. This one left in a coat pocket on the Sunday. It has kept its shape better than anyone expected.",
       },
     ],
   },
@@ -546,9 +549,10 @@ export const memories: Memory[] = [
     id: "mem-key",
     object_id: "obj-key",
     title: "A key",
-    occurred_at: "2027-03-16T01:00:00Z",
+    occurred_at: "2027-03-15T00:30:00Z",
     location_label: null,
     blocks: [
+      { type: "photos", media_ids: ["p-house"] },
       {
         type: "note",
         text:
@@ -574,8 +578,8 @@ export const memories: Memory[] = [
   {
     id: "mem-menu",
     object_id: "obj-menu",
-    title: "Morocco, 13 March — the menu",
-    occurred_at: "2027-03-13T17:30:00Z",
+    title: "Morocco, 12 March — the menu",
+    occurred_at: "2027-03-12T19:00:00Z",
     location_label: "Morocco, a house outside Marrakech",
     blocks: [
       {
@@ -603,7 +607,7 @@ export const memories: Memory[] = [
     id: "mem-place-card",
     object_id: "obj-place-card-lea",
     title: "Seat six",
-    occurred_at: "2027-03-13T17:30:00Z",
+    occurred_at: "2027-03-12T19:00:00Z",
     location_label: null,
     blocks: [
       {
@@ -617,7 +621,7 @@ export const memories: Memory[] = [
     id: "mem-fragment",
     object_id: "obj-fragment",
     title: "Overheard, around eleven",
-    occurred_at: "2027-03-13T22:04:00Z",
+    occurred_at: "2027-03-12T21:04:00Z",
     location_label: null,
     blocks: [
       {
@@ -636,7 +640,7 @@ export const memories: Memory[] = [
     id: "mem-shoes",
     object_id: "obj-shoes",
     title: "The morning run",
-    occurred_at: "2027-03-14T05:12:00Z",
+    occurred_at: "2027-03-13T06:00:00Z",
     location_label: "The road through the olive groves",
     blocks: [
       {
@@ -649,7 +653,6 @@ export const memories: Memory[] = [
           [0.32, 0.8], [0.18, 0.86], [0.08, 0.82],
         ],
       },
-      { type: "photos", media_ids: ["m-road", "m-dawn"] },
       {
         type: "note",
         text:
@@ -693,14 +696,13 @@ export const memories: Memory[] = [
     id: "mem-bowl",
     object_id: "obj-bowl",
     title: "A recovery ritual",
-    occurred_at: "2027-03-14T09:00:00Z",
+    occurred_at: "2027-03-14T15:30:00Z",
     location_label: null,
     blocks: [
       {
         type: "note",
         text: "Feet in warm salted water. Mint tea. Twelve minutes where nobody was allowed to be useful.",
       },
-      { type: "photos", media_ids: ["m-tea"] },
       {
         type: "learned",
         text: "Adaptation happens during rest, not during effort. The run asks the question; the recovery answers it.",
@@ -822,7 +824,7 @@ export const events: HouseEvent[] = [
     body:
       "{first_name},\n\nThe table has been cleared, but not everything was taken away. Some of the weekend is in the Memory Room now. A pair of shoes is drying in the Studio.\n\nThere is no need to look at any of it today. It will still be here.",
     signature: "— The House, the morning after",
-    starts_at: "2027-03-17T08:00:00Z",
+    starts_at: "2027-03-16T08:00:00Z",
   }),
   letter({
     id: "ev-clue-02",
@@ -944,7 +946,7 @@ export const unlocks: UserUnlock[] = [];
 
 export const connections: PeopleConnection[] = [
   // Jakub has already asked to find Léa again. Léa can't see this until she asks too.
-  { id: "con-jakub-lea", from_user: JAKUB, to_user: LEA, chapter_id: CH0, created_at: "2027-03-18T20:00:00Z" },
+  { id: "con-jakub-lea", from_user: JAKUB, to_user: LEA, chapter_id: CH0, created_at: "2027-03-17T20:00:00Z" },
 ];
 
 export const journal: JournalEntry[] = [
@@ -963,5 +965,5 @@ export const journal: JournalEntry[] = [
 ];
 
 export const interactions: Interaction[] = [
-  { id: "int-lea-glass", user_id: LEA, kind: "scan", ref: "under-your-glass", created_at: "2027-03-13T21:10:00Z" },
+  { id: "int-lea-glass", user_id: LEA, kind: "scan", ref: "under-your-glass", created_at: "2027-03-12T21:10:00Z" },
 ];

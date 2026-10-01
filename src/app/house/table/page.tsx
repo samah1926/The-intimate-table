@@ -1,12 +1,17 @@
-import { Doorways } from "@/components/house/Doorways";
-import { RoomHeader } from "@/components/house/RoomHeader";
-import { ObjectsInRoom } from "@/components/objects/ObjectsInRoom";
+import { NextRoom, RoomOpening } from "@/components/house/RoomOpening";
+import { KeptList } from "@/components/memory/KeptList";
 import { PeopleAtTable } from "@/components/rooms/PeopleAtTable";
-import { Traces } from "@/components/objects/Traces";
 import { objectsIn } from "@/lib/house/compose";
 import { getHouse } from "@/lib/house/session";
 
 export const metadata = { title: "The Table" };
+
+/** How the House cooks, whichever country it is in. */
+const THE_TABLE: [string, string][] = [
+  ["Breakfast", "Seasonal, local, simple."],
+  ["Lunch", "Light and nourishing."],
+  ["Dinner", "Generous, beautiful, to share."],
+];
 
 export default async function Table({ searchParams }: PageProps<"/house/table">) {
   const { view } = await getHouse();
@@ -16,72 +21,66 @@ export default async function Table({ searchParams }: PageProps<"/house/table">)
   const cards = view.table.placeCards;
   const chapters = [...new Set(cards.map((c) => c.chapter.label))];
 
-  if (!objects.length && !cards.length) {
-    return (
-      <TableTop empty>
-        <RoomHeader room={room} />
-        <section className="mx-auto max-w-6xl px-5 py-32 text-center sm:px-10 sm:py-44">
-          <p className="text-[1.7rem] font-light italic">Nobody has sat down here yet.</p>
-          <p className="mt-4 text-lg muted">The first evening you spend at a Chapter will be set out on this table.</p>
-        </section>
-        <Doorways from="table" rooms={view.rooms} />
-      </TableTop>
-    );
-  }
+  // The line the evening is remembered by, once the evening has been lived.
+  const overheard = objects
+    .filter((o) => o.state === "open")
+    .flatMap((o) => o.memory?.blocks ?? [])
+    .flatMap((b) => (b.type === "quote" ? [b] : []))
+    .at(-1);
+  const lived = objects.length > 0 || cards.length > 0;
 
   return (
-    <TableTop>
-      <RoomHeader room={room} />
+    <div>
+      <RoomOpening
+        room={room}
+        aside={chapters.join(" · ") || undefined}
+        title={overheard ? <>“{overheard.text}”</> : lived ? room.epigraph : "Nobody has sat down here yet."}
+        lede={
+          overheard ? (
+            <p className="meta text-[0.66rem]">Overheard — {overheard.attribution ?? "at the table"}</p>
+          ) : lived ? null : (
+            <p>The first evening you spend at a Chapter will be set out here — who was there, what was said, what was served.</p>
+          )
+        }
+        image="/house/photos/chapter-0/table-sunset.webp"
+        alt="A long table under the palms at sunset, set with linen, brass and red anthuriums"
+        position="50% 65%"
+      />
 
-      {objects.length > 0 && (
-        <section aria-label="Left on the table" className="relative mx-auto max-w-6xl px-5 pt-20 sm:px-10 sm:pt-24">
-          <ObjectsInRoom
-            objects={objects}
-            initialOpen={typeof open === "string" ? open : null}
-            className="relative flex flex-wrap items-start justify-center gap-x-14 gap-y-16 sm:gap-x-20"
-          />
-        </section>
-      )}
+      <section aria-label="The table" className="mx-auto mt-32 max-w-[84rem] px-6 sm:mt-40 sm:px-10 lg:px-14">
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] lg:gap-20">
+          <div>
+            <p className="eyebrow">The table</p>
+            <p className="lede mt-6 max-w-xs text-[1.6rem] muted">What we eat matters less than who passes it.</p>
+          </div>
+          <dl className="grid border-t hairline sm:grid-cols-3">
+            {THE_TABLE.map(([meal, line]) => (
+              <div key={meal} className="border-b py-8 hairline sm:border-b-0 sm:border-r sm:px-8 sm:first:pl-0 sm:last:border-r-0">
+                <dt className="display text-[1.9rem]">{meal}</dt>
+                <dd className="mt-3 text-[1.1rem] italic muted">{line}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
 
       {cards.length > 0 && (
-        <section aria-label="The people at your table" className="mx-auto mt-32 max-w-6xl px-5 sm:px-10">
-          <div className="mb-14 flex flex-wrap items-baseline justify-between gap-4">
-            <p className="label">At your table</p>
-            <p className="text-lg italic muted">{chapters.join(" · ")}</p>
+        <section aria-label="At your table" className="mx-auto mt-32 max-w-[84rem] px-6 sm:mt-40 sm:px-10 lg:px-14">
+          <div className="mb-10 flex flex-wrap items-baseline justify-between gap-4">
+            <h2 className="eyebrow">At your table</h2>
+            <p className="text-[1.05rem] italic muted">You can ask to find someone again. They will only know if they asked too.</p>
           </div>
           <PeopleAtTable cards={cards} />
-          <p className="mx-auto mt-20 max-w-md text-center text-lg italic muted">
-            You can ask to find someone again. They will only ever know if they asked too.
-          </p>
         </section>
       )}
 
-      <div className="mt-16">
-        <Doorways from="table" rooms={view.rooms} />
-      </div>
-    </TableTop>
-  );
-}
-
-/** The whole room is the table, seen from above, the morning after nobody cleared it. */
-function TableTop({ children, empty = false }: { children: React.ReactNode; empty?: boolean }) {
-  return (
-    <div className="relative overflow-hidden">
-      <div aria-hidden className="tex-wood absolute inset-0" />
-      {/* night: the wood only shows where the candles reach */}
-      <div aria-hidden className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(20,12,7,0.55), rgba(20,12,7,0.25) 30%, rgba(20,12,7,0.35) 70%, rgba(20,12,7,0.7))" }} />
-      <div aria-hidden className="candle absolute inset-0" style={{ background: "radial-gradient(40% 25% at 50% 20%, rgba(255,180,100,0.10), transparent 70%), radial-gradient(35% 20% at 50% 62%, rgba(255,170,90,0.08), transparent 70%)" }} />
-      {!empty && (
-        <>
-          <div className="hidden md:block">
-            <Traces room="table" />
-          </div>
-          <div className="md:hidden">
-            <Traces room="table" mobile />
-          </div>
-        </>
+      {objects.length > 0 && (
+        <div className="mx-auto mt-32 max-w-[84rem] px-6 sm:mt-40 sm:px-10 lg:px-14">
+          <KeptList objects={objects} initialOpen={typeof open === "string" ? open : null} roomName={room.name} title="Left on the table" />
+        </div>
       )}
-      <div className="relative">{children}</div>
+
+      <NextRoom from="table" rooms={view.rooms} />
     </div>
   );
 }

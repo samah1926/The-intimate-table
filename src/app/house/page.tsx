@@ -1,202 +1,200 @@
 import Link from "next/link";
-import { Doorway } from "@/components/house/Doorways";
-import { Letter } from "@/components/paper/Letter";
-import { ChapterEnvelope } from "@/components/rooms/ChapterEnvelope";
-import { Console } from "@/components/rooms/Console";
-import { Photo } from "@/components/photo/Photo";
-import type { HouseView, LetterView } from "@/lib/house/compose";
-import { ROOM_PATH, houseDate, timeOfDay } from "@/lib/house/light";
+import { Invitation } from "@/components/rooms/Invitation";
+import { Picture } from "@/components/ui/Picture";
+import type { HouseView, LetterView, RoomView } from "@/lib/house/compose";
+import { ROOM_PATH, dateRange, houseDate } from "@/lib/house/light";
 import { getHouse } from "@/lib/house/session";
 
 export const metadata = { title: "The Hall" };
 
-const ROOM_IN: Record<string, string> = {
-  memory: "in the Memory Room",
-  studio: "in the Studio",
-  table: "on the Table",
-  library: "on a shelf in the Library",
-  door: "behind a door",
+/** How each room introduces itself in the Hall. */
+const ROOMS: Record<string, { image: string; position?: string; words: string[] }> = {
+  table: { image: "/house/photos/chapter-0/table-sunset.webp", position: "50% 70%", words: ["People", "Places", "Conversations"] },
+  library: { image: "/house/photos/chapter-0/conversations-book.webp", position: "55% 50%", words: ["Food", "Conversation", "Movement", "Culture"] },
+  memory: { image: "/house/photos/chapter-0/calla.webp", position: "50% 40%", words: ["What remains"] },
 };
 
 export default async function Hall() {
   const { view } = await getHouse();
   const hall = view.rooms.find((r) => r.key === "hall")!;
-  const now = new Date(view.now);
   const during = view.hall.moments.find((m) => m.phase === "during");
-  const interlude = view.hall.moments.find((m) => m.phase === "interlude" && m.attended === false);
+  const interlude = view.hall.moments.find((m) => m.phase === "interlude" && !m.attended);
 
-  // While a Chapter is happening, the House goes quiet.
-  if (during) return <Quiet title="The table is set." lines={["Put the phone away.", "The House will keep everything."]} footnote="If a card at your place asks you to look, look." />;
-  if (interlude)
-    return <Quiet title="The House is being rearranged." lines={["Some of tonight will be here in the morning."]} footnote="Sleep. Nothing needs to be done." />;
+  if (during) return <Quiet title="The table is set." line="Put the phone away. The House will keep everything." />;
+  if (interlude) return <Quiet title="The House is being rearranged." line="Some of tonight will be here in the morning." />;
 
-  const [letter, ...olderLetters] = view.hall.letters;
-  const seasonal = view.hall.clues.filter((c) => c.kind === "seasonal");
-  const clues = view.hall.clues.filter((c) => c.kind !== "seasonal");
-  const invitations = view.hall.moments.filter((m) => m.phase === "prelude");
-  const door = view.rooms.find((r) => r.key === "door" && r.state === "open");
-  // A Polaroid from the last Chapter, tucked into the corner of the letter.
-  const tucked = view.objects.find((o) => o.kind === "photograph" && o.state === "open")?.memory?.blocks.flatMap((b) => (b.type === "photos" ? b.photos : []))[0] ?? null;
-  const doors = view.rooms.filter((r) => r.state === "open" && r.key !== "hall" && r.key !== "door");
+  const [letter, ...older] = view.hall.letters;
+  const seasonal = view.hall.clues.find((c) => c.kind === "seasonal");
+  const clue = view.hall.clues.find((c) => c.kind === "clue");
+  const invitation = view.hall.moments.find((m) => m.phase === "prelude");
+  const c = view.chapter;
 
   return (
-    <div className="pb-24">
-      <header className="mx-auto max-w-6xl px-5 pt-28 sm:px-10 sm:pt-36">
-        <p className="label muted">
-          {houseDate(now)}, {timeOfDay(now)}
-        </p>
-        <h1 className="mt-6 max-w-2xl text-[2.3rem] font-light italic leading-[1.08] sm:text-[3.4rem]">{hall.epigraph}</h1>
-        {seasonal.map((s) => (
-          <p key={s.id} className="mt-5 max-w-lg text-lg muted">
-            {s.body}
-          </p>
-        ))}
-      </header>
-
-      {/* The letter, and the console by the door */}
-      <section className="mx-auto mt-16 grid max-w-6xl gap-16 px-5 sm:mt-20 sm:px-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-20">
-        <div className="relative">
-          {letter && <Letter letter={letter} />}
-          {tucked && (
-            <Link
-              href="/house/memory?open=a-photograph"
-              aria-label="A photograph, tucked into the corner of the letter"
-              className="on-surface absolute -right-2 -top-8 w-28 rotate-[8deg] transition-transform duration-700 hover:rotate-[4deg] sm:-right-10 sm:w-36"
-            >
-              <Photo form="polaroid" media={tucked} note="the table" />
-            </Link>
+    <div className="pb-8">
+      {/* 1. Where the House is, in time */}
+      <section className="mx-auto mt-14 grid max-w-[84rem] gap-10 px-6 sm:mt-20 sm:px-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-end lg:gap-20 lg:px-14">
+        <div className="order-2 lg:order-1 lg:pb-4">
+          {c ? (
+            <>
+              {c.location_label && <p className="eyebrow muted">{c.location_label}</p>}
+              <h1 className="display mt-6 text-[3.2rem] sm:text-[4.6rem]">
+                Chapter {c.number}
+                {c.title && <> — {c.title}</>}
+              </h1>
+              {c.subtitle && <p className="lede mt-6 max-w-md text-[1.6rem] muted">{c.subtitle}.</p>}
+              <p className="meta mt-8 text-[0.74rem]">{dateRange(c.starts_at, c.ends_at)}</p>
+            </>
+          ) : (
+            <h1 className="lede text-[2.6rem] leading-tight">{hall.epigraph}</h1>
           )}
-          {olderLetters.length > 0 && <Drawer letters={olderLetters} />}
         </div>
-
-        <aside aria-label="On the console" className="lg:pt-10">
-          <Console>
-            <div className="space-y-16">
-              {invitations.map((m) => (
-                <div key={m.chapter.id}>
-                  <p className="label mb-6 muted">Left for you</p>
-                  <ChapterEnvelope moment={m} firstName={view.viewer.first_name} />
-                </div>
-              ))}
-              {clues.map((c) => (
-                <Clue key={c.id} clue={c} />
-              ))}
-            </div>
-          </Console>
-        </aside>
+        <div className="order-1 lg:order-2">
+          <Picture src="/house/photos/chapter-0/house-arch.webp" alt="The dining room under a lantern, an arch opening onto olive trees and the Atlas" aspect="3 / 2" priority />
+        </div>
       </section>
 
-      <Recent view={view} />
+      {/* 2. One letter */}
+      {letter && (
+        <section aria-label="A letter from the House" className="mx-auto mt-28 max-w-[38rem] px-6 sm:mt-36">
+          <div className="flex items-baseline justify-between border-b pb-5 hairline">
+            <p className="eyebrow">A letter from the House</p>
+            <p className="meta text-[0.64rem] muted">{houseDate(view.now)}</p>
+          </div>
+          <div className="prose-house mt-10 text-[1.32rem] leading-[1.7]">
+            {letter.body.split(/\n{2,}/).map((p, i) => (
+              <p key={i} className="whitespace-pre-line">
+                {p}
+              </p>
+            ))}
+          </div>
+          {letter.signature && <p className="lede mt-10 text-[1.4rem]">{letter.signature}</p>}
+          <Since view={view} />
+          {seasonal && <p className="mt-6 text-[1.05rem] italic muted">{seasonal.body}</p>}
+          {older.length > 0 && <Drawer letters={older} />}
+        </section>
+      )}
 
-      {/* Doors */}
-      <section aria-label="Rooms" className="mx-auto mt-28 max-w-6xl px-5 sm:px-10">
-        <p className="label muted">Doors</p>
-        <ul className="mt-10 grid grid-cols-2 gap-y-14 sm:flex sm:flex-wrap sm:items-end sm:gap-x-16">
-          {doors.map((r) => (
-            <li key={r.key} className="flex justify-center sm:block">
-              <Doorway room={r} size="lg" />
-            </li>
-          ))}
-          {door && (
-            <li className="col-span-2 flex flex-col items-center sm:ml-auto sm:block">
-              <Doorway room={door} size="lg" />
-              <p className="mt-3 max-w-[10rem] text-center text-[0.95rem] italic leading-snug muted">A door that wasn’t there before.</p>
-            </li>
+      {/* 3. What comes next */}
+      {invitation && (
+        <div className="mt-28 sm:mt-36">
+          <Invitation moment={invitation} />
+          {clue && (
+            <p className="mx-auto mt-10 max-w-[84rem] px-6 text-[1.1rem] italic muted sm:px-10 lg:px-14">
+              {clue.title ?? "Found on the console"}: <span className="not-italic text-ink">{clue.body}</span> {clue.signature && (/^[—–-]/.test(clue.signature) ? clue.signature : `— ${clue.signature}`)}
+            </p>
           )}
-        </ul>
-      </section>
+        </div>
+      )}
 
-      <Contents view={view} />
+      {/* 4. The rooms */}
+      <Rooms rooms={view.rooms} />
     </div>
   );
 }
 
-function Quiet({ title, lines, footnote }: { title: string; lines: string[]; footnote: string }) {
+function Since({ view }: { view: HouseView }) {
+  const inMemory = view.hall.recent.filter((r) => r.room === "memory").length;
+  if (!inMemory) return null;
+  const words = ["", "One thing", "Two things", "Three things", "Four things", "Five things", "Six things", "Seven things", "Eight things", "Nine things", "Ten things"];
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center px-8 text-center">
-      <div className="mb-12 h-10 w-px bg-current opacity-30" />
-      <h1 className="text-[2.6rem] font-light italic leading-tight sm:text-[3.6rem]">{title}</h1>
-      <div className="mt-8 space-y-1 text-xl muted">
-        {lines.map((l) => (
-          <p key={l}>{l}</p>
-        ))}
+    <Link href="/house/memory" className="group mt-12 flex items-center justify-between border-y py-5 hairline">
+      <span className="text-[1.15rem]">
+        {words[inMemory] ?? `${inMemory} things`} {inMemory === 1 ? "was" : "were"} left in the Memory Room since you were last here.
+      </span>
+      <span aria-hidden className="transition-transform duration-500 group-hover:translate-x-1">
+        →
+      </span>
+    </Link>
+  );
+}
+
+function Rooms({ rooms }: { rooms: RoomView[] }) {
+  const open = (k: string) => rooms.find((r) => r.key === k && r.state === "open");
+  const main = ["table", "library", "memory"].map(open).filter((r): r is RoomView => !!r);
+  const studio = open("studio");
+  const door = open("door");
+  return (
+    <section aria-label="The rooms" className="mx-auto mt-32 max-w-[84rem] px-6 sm:mt-40 sm:px-10 lg:px-14">
+      <div className="flex items-baseline justify-between border-b pb-5 hairline">
+        <h2 className="eyebrow">The House</h2>
+        <span className="meta text-[0.64rem] muted">Rooms</span>
       </div>
-      <p className="type mt-16 max-w-xs text-[0.78rem] muted">{footnote}</p>
+      <ul className="scroll-quiet -mx-6 mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-8 sm:overflow-visible sm:px-0">
+        {main.map((r) => {
+          const meta = ROOMS[r.key];
+          return (
+            <li key={r.key} className="w-[78%] shrink-0 snap-start sm:w-auto">
+              <Link href={ROOM_PATH[r.key]} className="group block">
+                <Picture src={meta.image} alt="" aspect="3 / 4" position={meta.position} hover />
+                <div className="mt-6 flex items-start justify-between gap-4">
+                  <div>
+                    <h3 className="display text-[2rem]">{r.name}</h3>
+                    <div className="my-4 h-px w-8 bg-ink/40" />
+                    <p className="meta text-[0.64rem] leading-[1.9] muted">
+                      {meta.words.map((w) => (
+                        <span key={w} className="block">
+                          {w}
+                        </span>
+                      ))}
+                    </p>
+                  </div>
+                  <span aria-hidden className="pt-3 transition-transform duration-500 group-hover:translate-x-1">
+                    →
+                  </span>
+                </div>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+      {(studio || door) && (
+        <div className="mt-16 flex flex-col gap-4 border-t pt-8 hairline sm:flex-row sm:items-baseline sm:justify-between">
+          {studio && (
+            <Link href={ROOM_PATH.studio} className="group text-[1.2rem]">
+              <span className="eyebrow mr-4 muted">Also</span>
+              <span className="link-quiet">The Studio — movement, mornings, recovery</span> <span aria-hidden>→</span>
+            </Link>
+          )}
+          {door && (
+            <Link href={ROOM_PATH.door} className="text-[1.1rem] italic muted transition-opacity hover:opacity-70">
+              A door that wasn’t there before →
+            </Link>
+          )}
+        </div>
+      )}
+    </section>
+  );
+}
+
+function Quiet({ title, line }: { title: string; line: string }) {
+  return (
+    <div className="flex min-h-[70dvh] flex-col items-center justify-center px-8 text-center">
+      <p className="eyebrow muted">The House</p>
+      <h1 className="display mt-8 text-[3rem] sm:text-[4.2rem]">{title}</h1>
+      <p className="lede mt-6 max-w-md text-[1.5rem] muted">{line}</p>
     </div>
   );
 }
 
 function Drawer({ letters }: { letters: LetterView[] }) {
   return (
-    <details className="group mx-auto mt-10 max-w-[34rem]">
-      <summary className="label cursor-pointer list-none text-center muted transition-opacity hover:opacity-100 [&::-webkit-details-marker]:hidden">
-        <span className="group-open:hidden">
-          {letters.length === 1 ? "An older letter" : `${letters.length} older letters`} in the drawer
-        </span>
-        <span className="hidden group-open:inline">Close the drawer</span>
+    <details className="group mt-10">
+      <summary className="eyebrow cursor-pointer list-none muted transition-opacity hover:opacity-70 [&::-webkit-details-marker]:hidden">
+        <span className="group-open:hidden">{letters.length === 1 ? "An earlier letter" : `${letters.length} earlier letters`}</span>
+        <span className="hidden group-open:inline">Close</span>
       </summary>
-      <div className="mt-10 space-y-10">
+      <div className="mt-8 space-y-10">
         {letters.map((l) => (
-          <Letter key={l.id} letter={l} delay={0} />
+          <div key={l.id} className="prose-house border-t pt-8 text-[1.2rem] leading-[1.7] muted hairline">
+            {l.body.split(/\n{2,}/).map((p, i) => (
+              <p key={i} className="whitespace-pre-line">
+                {p}
+              </p>
+            ))}
+            {l.signature && <p className="lede mt-6">{l.signature}</p>}
+          </div>
         ))}
       </div>
     </details>
-  );
-}
-
-function Clue({ clue }: { clue: LetterView }) {
-  return (
-    <div>
-      <p className="label mb-6 muted">{clue.title ?? "Found on the console"}</p>
-      <div className="paper relative mx-auto w-full max-w-[18rem] rotate-[1.5deg] px-7 py-8">
-        <p className="type text-[1.35rem] tracking-wide">{clue.body}</p>
-        {clue.signature && <p className="mt-4 text-[1rem] italic text-ink-soft">{clue.signature}</p>}
-      </div>
-    </div>
-  );
-}
-
-function Recent({ view }: { view: HouseView }) {
-  if (!view.hall.recent.length) return null;
-  const byRoom = new Map<string, { title: string; slug: string }[]>();
-  for (const r of view.hall.recent) byRoom.set(r.room, [...(byRoom.get(r.room) ?? []), r]);
-  return (
-    <section aria-label="Since you were last here" className="mx-auto mt-28 max-w-6xl px-5 sm:px-10">
-      <p className="label muted">Since you were last here</p>
-      <div className="mt-8 max-w-3xl space-y-5 text-[1.45rem] font-light leading-snug sm:text-[1.7rem]">
-        {[...byRoom.entries()].map(([room, items]) => (
-          <p key={room}>
-            Something was left {ROOM_IN[room] ?? "in the house"}:{" "}
-            {items.map((it, i) => (
-              <span key={it.slug}>
-                <Link href={`${ROOM_PATH[room as keyof typeof ROOM_PATH]}?open=${it.slug}`} className="link-quiet italic">
-                  {it.title.toLowerCase().replace(/^the /, "the ")}
-                </Link>
-                {i < items.length - 2 ? ", " : i === items.length - 2 ? " and " : "."}
-              </span>
-            ))}
-          </p>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function Contents({ view }: { view: HouseView }) {
-  if (!view.hall.contents.length) return null;
-  return (
-    <section aria-label="Chapters" className="mx-auto mt-28 max-w-6xl px-5 sm:px-10">
-      <p className="label muted">Contents</p>
-      <ol className="mt-8 max-w-md">
-        {view.hall.contents.map((c) => (
-          <li key={c.number} className="rule flex items-baseline gap-6 border-b py-3.5">
-            <span className="w-8 text-[1.05rem] tabular-nums muted">{c.number}</span>
-            <span className={`flex-1 text-[1.35rem] ${c.title ? "italic" : "muted"}`}>{c.title ?? "—"}</span>
-            {c.lived && <span className="label muted">lived</span>}
-            {c.current && !c.lived && <span className="label muted">soon</span>}
-          </li>
-        ))}
-      </ol>
-    </section>
   );
 }
