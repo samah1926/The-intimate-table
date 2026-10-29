@@ -1,6 +1,6 @@
 import "server-only";
 import { createServerClient } from "@supabase/ssr";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { supabaseAnonKey, supabaseServiceKey, supabaseUrl } from "./env";
 
@@ -21,7 +21,7 @@ export async function createSessionClient() {
   });
 }
 
-let admin: ReturnType<typeof createClient> | null = null;
+let admin: SupabaseClient | null = null;
 
 /** Service role. Server only. The House is composed with this after the viewer is known. */
 export function serviceClient() {
