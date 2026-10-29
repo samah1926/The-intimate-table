@@ -28,6 +28,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
               <Link href="/admin" className="block rounded px-2 py-1 text-sm hover:bg-neutral-200/60">
                 Preview &amp; rules
               </Link>
+              <Link href="/admin/chapter-0-responses" className="block rounded px-2 py-1 text-sm hover:bg-neutral-200/60">Chapter 0 · Réponses</Link>
               <Link href="/house" className="block rounded px-2 py-1 text-sm hover:bg-neutral-200/60">
                 ← Enter the House
               </Link>
